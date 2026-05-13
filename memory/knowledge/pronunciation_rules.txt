@@ -1,5 +1,3 @@
-For SAM TTS, some words should be written phonetically.
-
 immediately = ih mee dee it lee
 observation = ob zur vay shun
 organism = or guh niz um
