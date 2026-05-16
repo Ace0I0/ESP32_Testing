@@ -6,6 +6,8 @@ import subprocess
 import urllib.request
 from pathlib import Path
 
+
+# Constants to be used for color coding certain output (such as errors and responses)
 RESET = "\033[0m"
 
 RED = "\033[31m"
@@ -41,7 +43,7 @@ MODE_PATH = MODES_DIR / "EAS.json"
 # General json loader
 def load_json_file(path: Path) -> dict:
     if not path.exists():
-        raise FileNotFoundError(f"Missing JSON file: {path}")
+        raise FileNotFoundError(f"{RED}Missing JSON file: {path}{RESET}")
 
     with path.open("r", encoding="utf-8") as file:
         return json.load(file)
@@ -198,9 +200,9 @@ def main() -> None:
 
     voice_settings = identity.get("voice_settings", {})
 
-    print("Local Qwen + SAM test")
-    print(f"Loaded identity: {identity.get('name', 'Artemis')}")
-    print(f"Loaded mode: {mode.get('display_name', 'EAS Mode')}")
+    print(f"{BOLD}{RED}Local Qwen + SAM test{RESET}")
+    print(f"Loaded identity: {BOLD}{RED}{identity.get('name', 'Artemis')}{RESET}")
+    print(f"Loaded mode: {BOLD}{RED}{mode.get('display_name', 'EAS Mode')}{RESET}")
     print(
         "Voice settings: "
         f"pitch = {voice_settings.get('pitch', 95)}, "
@@ -208,7 +210,7 @@ def main() -> None:
         f"throat = {voice_settings.get('throat', 130)}, "
         f"mouth = {voice_settings.get('mouth', 110)}"
     )
-    print("Type q to quit.\n")
+    print(f"{BOLD}Type {RED}q{RESET}{BOLD} to quit.\n{RESET}")
 
     while True:
         user_text = input(GREEN+"User: "+RESET).strip()
@@ -239,10 +241,10 @@ def main() -> None:
 
         print(f"{PURPLE}{identity.get('name', 'Artemis')}{RESET}: {robot_text}")
 
-        #print("Generating SAM voice...")
+        #print("Generating SAM voice...") # Debugging statement
         make_sam_wav(robot_text, identity)
 
-        #print(f"Created WAV: {OUTPUT_WAV}")
+        #print(f"Created WAV: {OUTPUT_WAV}") # Another debugging statement
         print()
 
 if __name__ == "__main__":
