@@ -18,11 +18,20 @@ The initial goal is to build a small, self-contained AI robot personality that c
 ## Current System Overview
 
 ```mermaid
-graph TD;
-    A[User input]-->Python_Controller;
-    Python_Controller-->Persona/Mode_Config;
-    B-->D;
-    C-->D;
+flowchart TD
+    A[User Input] --> B[Python Controller]
+
+    B --> C[Persona / Mode Config]
+    C --> C1[identity.json]
+    C --> C2[eas.json]
+    C --> C3[Local lore files]
+
+    B --> D[Local LLM]
+    D --> D2[Qwen2.5 1.5B Instruct GGUF]
+
+    D --> E[Text Response]
+    E --> F[SAM TTS]
+    F --> G[Audio Output]
 ```
 
 ## Current System Overview
