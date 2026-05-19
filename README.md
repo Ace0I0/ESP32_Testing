@@ -19,6 +19,8 @@ The initial goal is to build a small, self-contained AI robot personality that c
 
 ```mermaid
 graph TD;
-    User Input --> Python Controller;
-
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
 ```
