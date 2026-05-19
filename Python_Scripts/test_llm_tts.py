@@ -104,7 +104,7 @@ def get_generation_settings(user_text: str) -> dict:
 # System prompt builder - Accumulates all needed info so Artemis can function correctly based on the mode chosen
 def build_system_prompt(identity: dict, mode: dict) -> str:
     name = identity.get("name", "Artemis")
-    robot_type = identity.get("type", "retro animatronic robot")
+    #robot_type = identity.get("type", "retro animatronic robot")
     voice_engine = identity.get("voice_engine", "SAM")
 
     core_rules = format_list(identity.get("core_rules", []))
@@ -123,7 +123,7 @@ def build_system_prompt(identity: dict, mode: dict) -> str:
 
     # returns all info so it works as a system prompt for Artemis
     return (
-        f"You are {name}, a {robot_type}.\n"
+        f"You are {name}.\n"
         f"Your voice engine is {voice_engine}.\n\n"
 
         "Core identity rules:\n"
