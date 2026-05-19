@@ -24,7 +24,7 @@ flowchart TD
     B --> C[Persona / Mode Config]
     C --> C1[identity.json]
     C --> C2[eas.json]
-    C --> C3[Local lore files]
+    C --> C3[Local knowledge files]
 
     B --> D[Local LLM]
     D --> D2[Qwen2.5 1.5B Instruct GGUF]
@@ -33,28 +33,27 @@ flowchart TD
     E --> F[SAM TTS]
     F --> G[Audio Output]
 ```
+## Hardware
 
-## Current System Overview
+The current target hardware is:
+
+- Raspberry Pi 5, 16 GB RAM
+- MicroSD card (or SSD storage for possible future models)
+- Speaker or audio output device
+- Possible microphones for future voice input functionality
+- Optional display, LEDs, servos, or robotic body components for future works
+
+The project was designed to start as a terminal-based prototype before expanding into anything resembling a physical robot.
+
+## Model
+The current model is:
 
 ```text
-User Input
-   |
-   v
-Python Controller
-   |
-   +--> Persona / Mode Config
-   |       - identity.json
-   |       - eas.json
-   |       - local lore files
-   |
-   +--> Local LLM
-   |       - llama.cpp
-   |       - Qwen2.5 1.5B Instruct GGUF
-   |
-   +--> Text Response
-   |
-   +--> SAM TTS
-   |
-   v
-Audio Output
+Qwen/Qwen2.5-1.5B-Instruct-GGUF:Q4_K_M
 ```
+# Download Qwen2.5 1.5B Instruct GGUF locally
+``huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct-GGUF qwen2.5-1.5b-instruct-q4_k_m.gguf --local-dir ~/models/qwen --local-dir-use-symlinks False``
+
+then run with (in order to run the model locally) -> NOTE: This is just to test the model locally by it self without any external modifications
+
+``./build/bin/llama-cli -m ~/models/qwen/qwen2.5-1.5b-instruct-q4_k_m.gguf -cnv -t 4 -c 4096 -n 256``
