@@ -51,9 +51,13 @@ The current model is:
 ```text
 Qwen/Qwen2.5-1.5B-Instruct-GGUF:Q4_K_M
 ```
-# Download Qwen2.5 1.5B Instruct GGUF locally
-``huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct-GGUF qwen2.5-1.5b-instruct-q4_k_m.gguf --local-dir ~/models/qwen --local-dir-use-symlinks False``
+## Download Qwen2.5 1.5B Instruct GGUF locally
+```text
+huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct-GGUF qwen2.5-1.5b-instruct-q4_k_m.gguf --local-dir ~/models/qwen --local-dir-use-symlinks False
+```
 
 then run with (in order to run the model locally) -> NOTE: This is just to test the model locally by it self without any external modifications
 
-``./build/bin/llama-cli -m ~/models/qwen/qwen2.5-1.5b-instruct-q4_k_m.gguf -cnv -t 4 -c 4096 -n 256``
+```text
+./build/bin/llama-cli -m ~/models/qwen/qwen2.5-1.5b-instruct-q4_k_m.gguf -cnv -t 4 -c 4096 -n 256
+```
