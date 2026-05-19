@@ -1,0 +1,7 @@
+Fictional contact information:
+Business name: Artemis Public Signal Office
+Phone: 1-555-0196
+Email: reports@artemis-signal.local
+Address: 2600 Signal House Road, North Sector, Station 7
+
+Use this information only when the user asks for contact information, reporting instructions, or official agency details.

@@ -31,14 +31,14 @@ BASE_DIR = Path(__file__).resolve().parent
 MEMORY_DIR = BASE_DIR / "memory"
 MODES_DIR = MEMORY_DIR / "modes"
 
-# Commented this part out for now, we can deal with adding knowledge to Artemis later
-#KNOWLEDGE_DIR = MEMORY_DIR / "knowledge"
+KNOWLEDGE_DIR = MEMORY_DIR / "knowledge"
 
 # Defines the basic identity of Artemis
 IDENTITY_PATH = MEMORY_DIR / "identity.json"
 
 # Singlular mode for now, 3 total in the future
 MODE_PATH = MODES_DIR / "EAS.json"
+
 
 # General json loader
 def load_json_file(path: Path) -> dict:
@@ -60,6 +60,15 @@ def load_mode() -> dict:
 def format_list(items: list[str]) -> str:
     return "\n".join(f"- {item}" for item in items)
 
+# Loads the knowledge file which has things like lore and (ill prob remove it since idk how to make it learn correct pronuniciation) pronunciation rules
+def load_knowledge_file(filename: str) -> str:
+    path = KNOWLEDGE_DIR / filename
+
+    if not path.exists():
+        return ""
+
+    return path.read_text(encoding="utf-8").strip()
+
 # formats examples listed in modes (may or may not remove this, but with that i have in mind rn, it should be useful)
 def format_examples(examples: list[dict]) -> str:
     lines = []
@@ -73,6 +82,25 @@ def format_examples(examples: list[dict]) -> str:
 
     return "\n\n".join(lines)
 
+# Sets up a check to see when we need to extend the max tokens and temperature, honestly later i wanna switch this to a physical switch rather than 
+# just a detection for key words
+def get_generation_settings(user_text: str) -> dict:
+    lower = user_text.lower()
+
+    # Current list of words to look out for
+    long_request_words = ["broadcast", "psa", "announcement", "full alert", "longer", "detailed"]
+
+    if any(word in lower for word in long_request_words):
+        return {
+            "max_tokens": 260,
+            "temperature": 0.75,
+        }
+
+    return {
+        "max_tokens": 160,
+        "temperature": 0.65,
+    }
+
 # System prompt builder - Accumulates all needed info so Artemis can function correctly based on the mode chosen
 def build_system_prompt(identity: dict, mode: dict) -> str:
     name = identity.get("name", "Artemis")
@@ -83,6 +111,15 @@ def build_system_prompt(identity: dict, mode: dict) -> str:
     tone = ", ".join(mode.get("tone", []))
     response_rules = format_list(mode.get("response_rules", []))
     examples = format_examples(mode.get("example_responses", []))
+
+    knowledge_sections = []
+
+    for filename in mode.get("knowledge_files", []):
+        text = load_knowledge_file(filename)
+        if text:
+            knowledge_sections.append(f"Knowledge file: {filename}\n{text}")
+
+    knowledge_text = "\n\n".join(knowledge_sections)
 
     # returns all info so it works as a system prompt for Artemis
     return (
@@ -103,15 +140,20 @@ def build_system_prompt(identity: dict, mode: dict) -> str:
         "Example responses:\n"
         f"{examples}\n\n"
 
+        "Relevant local knowledge:\n"
+        f"{knowledge_text}\n\n"
+
         "Final output rules:\n"
         f"- Respond as {name}.\n"
         "- Write in normal English.\n"
         "- Do not use IPA or dictionary phonetic notation.\n"
         "- Do not use markdown.\n"
-        "- Keep the response suitable for old robotic text to speech.\n" # lets see if that even works considering its a 1.5B model lol
+        "- Keep the response suitable for old robotic text to speech.\n"
     )
 
 def ask_local_model(user_text: str, system_prompt: str) -> str:
+
+    settings = get_generation_settings(user_text)
     payload = {
         "model": "local-qwen",
         "messages": [
@@ -124,8 +166,8 @@ def ask_local_model(user_text: str, system_prompt: str) -> str:
                 "content": user_text,
             },
         ],
-        "max_tokens": 250,
-        "temperature": 0.8,
+        "max_tokens": settings["max_tokens"],
+        "temperature": settings["temperature"],
     }
 
     data = json.dumps(payload).encode("utf-8")
