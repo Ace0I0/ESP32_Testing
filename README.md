@@ -19,7 +19,7 @@ The initial goal is to build a small, self-contained AI robot personality that c
 
 ```mermaid
 graph TD;
-    A-->B;
+    User_input-->B;
     A-->C;
     B-->D;
     C-->D;
