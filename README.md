@@ -19,8 +19,33 @@ The initial goal is to build a small, self-contained AI robot personality that c
 
 ```mermaid
 graph TD;
-    User input-->B;
-    A-->C;
+    User_input-->Python_Controller;
+    Python_Controller-->Persona/Mode_Config;
     B-->D;
     C-->D;
+```
+
+## Current System Overview
+
+```text
+User Input
+   |
+   v
+Python Controller
+   |
+   +--> Persona / Mode Config
+   |       - identity.json
+   |       - eas.json
+   |       - local lore files
+   |
+   +--> Local LLM
+   |       - llama.cpp
+   |       - Qwen2.5 1.5B Instruct GGUF
+   |
+   +--> Text Response
+   |
+   +--> SAM TTS
+   |
+   v
+Audio Output
 ```
