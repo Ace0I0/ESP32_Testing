@@ -56,8 +56,18 @@ Qwen/Qwen2.5-1.5B-Instruct-GGUF:Q4_K_M
 huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct-GGUF qwen2.5-1.5b-instruct-q4_k_m.gguf --local-dir ~/models/qwen --local-dir-use-symlinks False
 ```
 
-then run with (in order to run the model locally) -> NOTE: This is just to test the model locally by it self without any external modifications
+Then run with the following command 
 
 ```text
 ./build/bin/llama-cli -m ~/models/qwen/qwen2.5-1.5b-instruct-q4_k_m.gguf -cnv -t 4 -c 4096 -n 256
 ```
+
+Note: This is just to test the model locally by it self without any external modifications
+
+### Text-to-Speech
+
+This project uses [SAM: Software Automatic Mouth](https://github.com/s-macke/SAM) as of this moment for its only mode, a C port of the classic 1982 Commodore 64 speech synthesizer, to generate a retro non-human robot voice locally on the Raspberry Pi.
+
+The SAM binary is built directly on the Pi and used from Python through command-line calls that generate `.wav` audio files.
+
+Note: The SAM source was lightly modified to support longer generated responses by chunking input safely before synthesis.
