@@ -119,6 +119,6 @@ Potential future modes:
 ## Credits
 
 - [`llama.cpp`](https://github.com/ggerganov/llama.cpp) for local LLM inference
-- [`Qwen2.5`](https://huggingface.co/Qwen) for the language model
+- [`Qwen2.5`](https://huggingface.co/Qwen/Qwen2.5-1.5B) for the language model
 - [`SAM`](https://github.com/s-macke/SAM) for retro text-to-speech
 - Raspberry Pi Foundation for the target hardware platform
