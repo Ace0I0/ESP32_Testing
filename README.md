@@ -86,7 +86,7 @@ Default voice settings:
 Artemis uses a layered prompt structure:
 
 1. Base identity from `identity.json`
-2. Active mode rules from `eas.json`
+2. Active mode rules from `eas.json` or any future modes
 3. Optional local knowledge files
 4. User input
 5. Short response instruction
