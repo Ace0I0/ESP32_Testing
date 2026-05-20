@@ -52,13 +52,13 @@ The current model is:
 Qwen/Qwen2.5-1.5B-Instruct-GGUF:Q4_K_M
 ```
 ## Download Qwen2.5 1.5B Instruct GGUF locally
-```text
+```bash
 huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct-GGUF qwen2.5-1.5b-instruct-q4_k_m.gguf --local-dir ~/models/qwen --local-dir-use-symlinks False
 ```
 
 Then run with the following command 
 
-```text
+```bash
 ./build/bin/llama-cli -m ~/models/qwen/qwen2.5-1.5b-instruct-q4_k_m.gguf -cnv -t 4 -c 4096 -n 256
 ```
 
@@ -80,3 +80,45 @@ Default voice settings:
 | Speed | 65 |
 | Throat | 130 |
 | Mouth | 110 |
+
+## Prompt Strategy
+
+Artemis uses a layered prompt structure:
+
+1. Base identity from `identity.json`
+2. Active mode rules from `eas.json`
+3. Optional local knowledge files
+4. User input
+5. Short response instruction
+
+This makes it easier to change the assistant's personality without editing the main Python code.
+
+## Planned Future Features
+
+- Microphone input
+- Wake word detection
+- Better response streaming
+- Improved prompt assembly
+- Local RAG-style knowledge lookup
+- Multiple modes beyond EAS Mode
+- Servo/animatronic movement
+- OLED or small screen interface
+- Startup animation or boot sequence
+- Mode switching through buttons, voice, or terminal commands
+
+## Future Modes
+
+Potential future modes:
+
+| Mode | Purpose |
+|---|---|
+| EAS Mode | Broadcast-style emergency assistant persona |
+| Learning Mode | Explain topics clearly and calmly |
+| Informational Mode | Factual assistant behavior |
+
+## Credits
+
+- [`llama.cpp`](https://github.com/ggerganov/llama.cpp) for local LLM inference
+- [`Qwen2.5`](https://huggingface.co/Qwen) for the language model
+- [`SAM`](https://github.com/s-macke/SAM) for retro text-to-speech
+- Raspberry Pi Foundation for the target hardware platform
