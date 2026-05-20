@@ -68,6 +68,15 @@ Note: This is just to test the model locally by it self without any external mod
 
 This project uses [SAM: Software Automatic Mouth](https://github.com/s-macke/SAM) as of this moment for its only mode, a C port of the classic 1982 Commodore 64 speech synthesizer, to generate a retro non-human robot voice locally on the Raspberry Pi.
 
-The SAM binary is built directly on the Pi and used from Python through command-line calls that generate `.wav` audio files.
+The SAM binary is built directly on the Pi and used with Python through command-line calls that generate `.wav` audio files.
 
-Note: The SAM source was lightly modified to support longer generated responses by chunking input safely before synthesis.
+Note: The SAM source was modified to support longer generated responses by chunking input before the actual synthesis step.
+
+Default voice settings:
+
+| Parameter | Value |
+|---|---|
+| Pitch | 95 |
+| Speed | 65 |
+| Throat | 130 |
+| Mouth | 110 |
