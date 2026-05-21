@@ -60,14 +60,18 @@ def load_mode() -> dict:
 def format_list(items: list[str]) -> str:
     return "\n".join(f"- {item}" for item in items)
 
-# Loads the knowledge file which has things like lore and (ill prob remove it since idk how to make it learn correct pronuniciation) pronunciation rules
-def load_knowledge_file(filename: str) -> str:
-    path = KNOWLEDGE_DIR / filename
+# Loads the knowledge file which has things like lore (this has different categories as there is too much info to load it all at once)
+def load_selected_knowledge(files: list[str]) -> str:
+    sections = []
 
-    if not path.exists():
-        return ""
+    for filename in files:
+        path = KNOWLEDGE_DIR / filename
+        if path.exists():
+            text = path.read_text(encoding="utf-8").strip()
+            if text:
+                sections.append(f"Knowledge file: {filename}\n{text}")
 
-    return path.read_text(encoding="utf-8").strip()
+    return "\n\n".join(sections)
 
 # formats examples listed in modes (may or may not remove this, but with that i have in mind rn, it should be useful)
 def format_examples(examples: list[dict]) -> str:
@@ -101,10 +105,34 @@ def get_generation_settings(user_text: str) -> dict:
         "temperature": 0.65,
     }
 
+# Decides which file is loaded depending on user input, detecting keywords like the previous function
+def get_relevant_knowledge_files(user_text: str) -> list[str]:
+    text = user_text.lower()
+
+    files = ["eas_general.txt"] # We load the eas general txt file as this contains a basis for Artemis, the next conditional 
+
+    if any(word in text for word in ["activity", "alert", "update", "happening", "event", "report", "reports", "status"]):
+        files.append("eas_current_activity.txt")
+
+    if any(word in text for word in ["disease", "virus", "outbreak", "infection", "symptom", "contagion", "medical"]):
+        files.append("eas_diseases.txt")
+
+    if any(word in text for word in [
+        "creature", "entity", "entities", "monster", "mimic", "woodcrawler",
+        "vita carnis", "gemini", "nature's mockery", "deep root", "fake people"
+    ]):
+        files.append("eas_creatures.txt")
+
+    if any(word in text for word in ["contact", "phone", "email", "address", "report this", "agency", "office"]):
+        files.append("eas_contacts.txt")
+        files.append("eas_agencies.txt")
+
+    return list(dict.fromkeys(files))
+
 # System prompt builder - Accumulates all needed info so Artemis can function correctly based on the mode chosen
-def build_system_prompt(identity: dict, mode: dict) -> str:
+def build_system_prompt(identity: dict, mode: dict, user_text: str) -> str:
     name = identity.get("name", "Artemis")
-    #robot_type = identity.get("type", "retro animatronic robot")
+    robot_type = identity.get("type", "retro animatronic robot")
     voice_engine = identity.get("voice_engine", "SAM")
 
     core_rules = format_list(identity.get("core_rules", []))
@@ -112,41 +140,27 @@ def build_system_prompt(identity: dict, mode: dict) -> str:
     response_rules = format_list(mode.get("response_rules", []))
     examples = format_examples(mode.get("example_responses", []))
 
-    knowledge_sections = []
+    selected_files = get_relevant_knowledge_files(user_text)
+    knowledge_text = load_selected_knowledge(selected_files)
 
-    for filename in mode.get("knowledge_files", []):
-        text = load_knowledge_file(filename)
-        if text:
-            knowledge_sections.append(f"Knowledge file: {filename}\n{text}")
-
-    knowledge_text = "\n\n".join(knowledge_sections)
-
-    # returns all info so it works as a system prompt for Artemis
     return (
-        f"You are {name}.\n"
+        f"You are {name}, a {robot_type}.\n"
         f"Your voice engine is {voice_engine}.\n\n"
-
         "Core identity rules:\n"
         f"{core_rules}\n\n"
-
         f"Current mode: {mode.get('display_name', 'EAS Mode')}\n"
         f"Mode name: {mode.get('mode_name', 'eas')}\n"
         f"Mode description: {mode.get('description', '')}\n"
         f"Tone: {tone}\n\n"
-
         "Mode response rules:\n"
         f"{response_rules}\n\n"
-
         "Example responses:\n"
         f"{examples}\n\n"
-
         "Relevant local knowledge:\n"
         f"{knowledge_text}\n\n"
-
         "Final output rules:\n"
         f"- Respond as {name}.\n"
         "- Write in normal English.\n"
-        "- Do not use IPA or dictionary phonetic notation.\n"
         "- Do not use markdown.\n"
         "- Keep the response suitable for old robotic text to speech.\n"
     )
@@ -227,6 +241,8 @@ def thinking_spinner(stop_event: threading.Event) -> None:
     sys.stdout.write("\r" + " " * 30 + "\r")
     sys.stdout.flush()
 
+    
+
 def main() -> None:
     if not SAM_BINARY.exists():
         print(f"{RED}SAM binary not found at: {SAM_BINARY}{RESET}")
@@ -235,7 +251,6 @@ def main() -> None:
     try:
         identity = load_identity()
         mode = load_mode()
-        system_prompt = build_system_prompt(identity, mode)
     except Exception as exc:
         print(f"{RED}Failed to load Artemis memory files: {exc}{RESET}")
         return
@@ -255,14 +270,14 @@ def main() -> None:
     print(f"{BOLD}Type {RED}q{RESET}{BOLD} to quit.\n{RESET}")
 
     while True:
-        user_text = input(GREEN+"User: "+RESET).strip()
+        user_text = input(GREEN + "User: " + RESET).strip()
 
         if user_text.lower() in {"q", "quit", "exit"}:
             break
 
         if not user_text:
             continue
-
+        
         print()
 
         stop_event = threading.Event()
@@ -274,8 +289,8 @@ def main() -> None:
         )
 
         spinner_thread.start()
-
         try:
+            system_prompt = build_system_prompt(identity, mode, user_text)
             robot_text = ask_local_model(user_text, system_prompt)
         finally:
             stop_event.set()

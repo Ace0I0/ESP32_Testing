@@ -1,0 +1,37 @@
+EAS CONTACT AND REPORTING DATA
+==============================
+
+CONTACT INFORMATION
+Business name: Artemis Public Signal Office
+Phone: 1-555-0196
+Email: reports@artemis-signal.local
+Address: 2600 Signal House Road, North Sector, Station 7
+
+Use this information only when the user asks for contact information, reporting instructions, or official agency details.
+
+FICTIONAL REPORTING CHANNEL DATA
+Artemis Public Signal Office accepts fictional reports under the following categories:
+- unknown voice report
+- movement near tree line
+- duplicate person report
+- plant growth inside structure
+- root or bulb report
+- red tendril report
+- floor vibration report
+- signal interference report
+- spore or dust report
+- missing animal report
+- wrong-family-member report
+- repeated broadcast report
+- station tone report
+
+Fictional report fields:
+- name or anonymous status
+- location
+- time observed
+- number of witnesses
+- whether a voice was heard
+- whether the object moved
+- whether contact occurred
+- whether signal equipment reacted
+- whether the same event has happened before

@@ -1,0 +1,67 @@
+EAS GENERAL DATA
+================
+
+ARTEMIS PUBLIC SIGNAL OFFICE
+
+EAS MODE LORE DATA FILE
+File name: eas_lore.txt
+Purpose: Local reference data for Artemis EAS Mode.
+Classification: Fictional narrative support data with selected public-health terminology references.
+Real-world status: The hazards and agencies in this file are fictional unless explicitly marked as public-health terminology.
+
+CANON-ALIGNED GEMINI HOME ENTERTAINMENT DATA
+Series name: Gemini Home Entertainment.
+Creator: Remy Abode.
+Presentation style: fictional VHS tapes, educational videos, instructional tapes, documentaries, home safety material, and mundane media that slowly reveal cosmic and biological horror.
+Common era: 1980s and 1990s presentation style.
+Core themes: extraterrestrial invasion, parasitism, cosmic horror, body horror, environmental corruption, false safety media, and the collapse of trust in familiar images.
+Central antagonist in public summaries: The Iris, described as a sentient planet or planet-like entity influencing Earth and connected to entities such as Woodcrawlers, Roots, and Gardeners.
+Common threats: Woodcrawlers, Fake People, Deep Root Disease, Nature's Mockery, Roots, The Wretch.
+Relevant stylistic data: tapes often begin mundane or educational, then introduce impossible instructions, corrupted images, and official-sounding warnings.
+
+CANON-ALIGNED VITA CARNIS DATA
+Series name: Vita Carnis.
+Creator: Darian Quilloy.
+Presentation style: analog-horror documentary material, government files, research footage, public safety documents, culinary material, containment records, and creature classification media.
+Core fictional premise: the Vita Carnis genus suddenly appears across Earth in 1931.
+Common organizations in lore: C.A.R.C.A.S., Nutrire-related entities, and a cult associated with the Singularity.
+Core entities: Crawl, Trimmings, Meat Snake, Mimic, Harvester, Host of Influence, Monolith, Singularity.
+Common themes: living meat ecology, biological normalcy through public acceptance, government infiltration, species documentation, and the danger of ordinary-looking instructional media.
+
+ACTIVITY PHRASE BANK DATA
+The following are fictional sentence fragments found in public alerts, recovered tapes, and Artemis archive cards.
+- Public signal monitoring is active.
+- Advisory record has been updated.
+- Movement has been reported near the tree line.
+- The previous silence should not be interpreted as safety.
+- The object is familiar only in outline.
+- The voice is not sufficient identification.
+- The signal has repeated three times.
+- The door sound is not a request for entry.
+- The person at the window has not been verified.
+- The growth pattern is inconsistent with local vegetation.
+- Soil movement has been detected under the foundation.
+- Observation status has not been cleared.
+- The registry contains active advisories.
+- No siren is required for an advisory to remain active.
+- The warning tone may continue after the message ends.
+- The contact channel is available for fictional reports.
+- Public Signal Office records are incomplete.
+- Station 7 has not lost power.
+- The broadcast is late because the event occurred early.
+- Familiar voices are archived as unreliable evidence.
+- The current hazard is not confirmed safe.
+- The current signal is not confirmed human.
+- The area is not cleared.
+- The report is not closed.
+- Further information is pending.
+
+ANALOG BROADCAST STYLE REFERENCE DATA
+Common surface format: calm official announcement, short technical label, plain location, simple risk phrase, limited reassurance, unresolved ending.
+Common visual atmosphere: degraded tape, centered text, analog snow, color bars, incorrect timestamp, static frame, field recording, public office logo, still photograph with one wrong detail.
+Common audio atmosphere: tone burst, warble, detuned chime, tape flutter, dropped syllables, doubled voice, room hum, distorted narrator.
+Common narrative structure: normal instructional media becomes increasingly specific, then impossible, then intimate.
+Common text fragments: attention viewer, public advisory, official notice, station message, signal record, safety bulletin, observation area, monitoring office, local reporting channel, final notice.
+Common tension method: the message avoids panic while the content implies panic is justified.
+Common realism method: a fake agency speaks with the structure of a real agency, but the event details are impossible.
+Common restraint marker: the broadcast does not scream; it states the impossible as if it is a weather update.

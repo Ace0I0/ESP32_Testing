@@ -1,0 +1,92 @@
+EAS LOCATION AND SITE DATA
+==========================
+
+CURRENT SIMULATED ACTIVITY BOARD
+Registry timestamp: rolling fictional dataset, active by default for EAS Mode.
+Overall status: Elevated signal activity.
+Public signal condition: Yellow-Gray.
+Confirmed active advisories: 7.
+Unverified advisories: 5.
+Dormant advisories: 3.
+Primary monitoring zone: North Sector, Station 7.
+Secondary monitoring zones: Lake corridor, wooded service roads, abandoned residential blocks, low-band radio shelters, rural campgrounds, and signal relay structures.
+Notes: If asked whether anything is happening, the current board contains active advisories. A quiet board means no immediate confirmed breach, not an absence of unusual activity.
+
+CURRENT LOCATION DATA FROM ACTIVE ADVISORIES
+APSO-DRD-032: Current location data: North Sector tree line, abandoned storm shelter three, old lake cabins, culvert access path B, and the south foundation corridor.
+APSO-NM-011: Current location data: wooded ditches, overgrown drainage areas, empty bedrooms with soil intrusion, derelict greenhouses, and rooms where vines are present without a known root source.
+APSO-WC-027: Current location data: Moonlight Acres-type campgrounds, family housing blocks, houses with unexplained subfloor noises, and structures near underground cavities.
+APSO-FP-018: Current location data: abandoned homes, exterior doorways, fogged windows, empty school corridors, and roads where a lone person is seen standing without destination.
+APSO-WR-004: Current location data: camp ruins, sealed cabin structures, animal trails with dragged soil, old party halls, and boarded recreation areas.
+APSO-VC-MIM-006: Current location data: tree lines, exterior windows, sheds, garages, rural roads, yards near Crawl growth, and places where a person is seen waving from too far away.
+APSO-VC-HAR-003: Current location data: northern woodland edges, hiking trails, ditches near dense vegetation, recently disturbed forest soil, and areas with sudden animal silence.
+APSO-VC-HOST-002: Current location data: empty lots with fine orange dust, abandoned gardens, wind-exposed roads, low fields after sunset, and indoor rooms where powder appears near vents.
+APSO-VC-CRAWL-014: Current location data: relay antennas, radio rooms, abandoned kitchens, field transmitters, basement wiring, and locations where red tendrils approach powered equipment.
+APSO-VC-MONO-001: Current location data: long-range only, no local physical confirmation.
+APSO-VC-SING-001: Current location data: long-range restricted reference, no local physical confirmation.
+
+APSO-STATION-007
+Name: Station 7
+Location: North Sector, old signal house.
+Structure: two-story brick utility building with underground wire trench, analog broadcast room, locked archive cabinet, shortwave antenna mast, and concrete basement labeled RECEIVING.
+Status: active.
+Unusual property: station clocks lose one minute during signal spikes. Tape reels sometimes contain audio before recording begins.
+Common artifact: unmarked cassette labeled PUBLIC SAFETY COPY.
+
+APSO-SHELTER-003
+Name: Shelter 3
+Status: compromised but monitored.
+Location: abandoned storm shelter east of service road B.
+Recorded anomalies: soil intrusion from ceiling seams, red threadlike root material, cassette playback of missing voices, and one inactive Nature's Mockery instance found in the lower hall.
+Current activity: motion sensor irregular at 03:17 local station time.
+Associated registry entries: APSO-DRD-032, APSO-NM-011, APSO-SIGNAL-009.
+
+APSO-LAKE-012
+Name: Lake Corridor
+Status: active nighttime watch.
+Location notes: cabins, dock paths, drainage culverts, lakeside woods, and one collapsed radio tower.
+Recorded anomalies: humanoid silhouette near waterline, repeated knocking from inside a locked shed, animal carcasses arranged facing the road, and red tendril growth around a fallen antenna.
+Associated registry entries: APSO-VC-MIM-006, APSO-VC-CRAWL-014, APSO-WC-027.
+
+APSO-FAMILY-019
+Name: Empty Family Residence Pattern
+Status: recurring.
+Locations: homes with large family occupancy records, houses near woods, and properties with subfloor access.
+Pattern data: repeated cries for help, movement beneath floorboards, false household members at windows, missing pets, family photos with extra figures, and basement doors blocked from the inside.
+Associated registry entries: APSO-WC-027, APSO-FP-018.
+
+FICTIONAL LOCAL HAZARD INDEX
+Hazard: person-shaped figure near window.
+Likely references: Mimic, Fake People, Woodcrawler lure.
+Related advisories: APSO-VC-MIM-006, APSO-FP-018, APSO-WC-027.
+Activity board status: active.
+
+Hazard: voice from dark room.
+Likely references: Fake People, Nature's Mockery, Gray Carrier Signal.
+Related advisories: APSO-FP-018, APSO-NM-011, APSO-SIGNAL-009.
+Activity board status: active.
+
+Hazard: plant growth in home.
+Likely references: Deep Root Disease, Nature's Mockery, Crawl.
+Related advisories: APSO-DRD-032, APSO-NM-011, APSO-VC-CRAWL-014.
+Activity board status: active.
+
+Hazard: floorboard knocking.
+Likely references: Woodcrawler, Roots, substructure breach.
+Related advisories: APSO-WC-027, APSO-DRD-032.
+Activity board status: active.
+
+Hazard: red tendrils around electrical equipment.
+Likely references: Crawl, Gray Carrier Signal.
+Related advisories: APSO-VC-CRAWL-014, APSO-SIGNAL-009.
+Activity board status: active.
+
+Hazard: sudden memory change.
+Likely references: Deep Root Disease, Host of Influence, signal exposure.
+Related advisories: APSO-DRD-032, APSO-VC-HOST-002, APSO-SIGNAL-009.
+Activity board status: active.
+
+Hazard: animal silence in woods.
+Likely references: Harvester, Mimic, Woodcrawler, Wretch.
+Related advisories: APSO-VC-HAR-003, APSO-VC-MIM-006, APSO-WC-027, APSO-WR-004.
+Activity board status: active.

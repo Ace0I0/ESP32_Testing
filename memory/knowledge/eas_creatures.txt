@@ -1,0 +1,217 @@
+EAS CREATURE AND ENTITY DATA
+============================
+
+APSO-NM-011
+Name: Nature's Mockery
+Status: Active observation.
+Category: Late-stage Deep Root manifestation.
+Known associations: Deep Root Disease, Roots, The Iris, repeated speech, plant-like body mass, living victim persistence.
+Activity summary: Nature's Mockery instances are recorded as dangerous plant-like or fungus-like bodies connected to final-stage Deep Root infection. Public lore records describe contact effects including hallucination, muscular paralysis, body disfigurement, and flesh decay. Some records describe victims as conscious during late-stage conversion. Instances may repeat sentences spoken to them rather than generate original speech.
+Primary uncertainty: Some records imply an occupant or secondary organism may emerge from the interior of a mature instance, but the nature of the occupant is unconfirmed.
+Current location data: wooded ditches, overgrown drainage areas, empty bedrooms with soil intrusion, derelict greenhouses, and rooms where vines are present without a known root source.
+Common report language: plant not plant, copied vegetation, speaking shrub, voice from the ditch, hollow leaves, face in the root mass.
+
+APSO-WC-027
+Name: Woodcrawler
+Status: Active perimeter watch.
+Category: Iris-linked hostile entity.
+Known associations: The Iris, Fake People, floor breach events, under-house movement, vocal lure behavior.
+Activity summary: Public lore identifies Woodcrawlers as arachnid-like aliens from The Iris. Records describe them as hunters that move quietly, attack from below structures, and convert humans into Fake People. Sightings are associated with rural homes, large-family residences, crawlspaces, basements, and floorboard sounds.
+Primary uncertainty: Full anatomy is rarely observed. Reports mention long limbs, spider-like silhouettes, a single reflective eye, and possible prey-entry structures.
+Current location data: Moonlight Acres-type campgrounds, family housing blocks, houses with unexplained subfloor noises, and structures near underground cavities.
+Common report language: it is under the floor, they stole their voices, footstep without weight, knocking from beneath, door vibration without a person present.
+
+APSO-FP-018
+Name: Fake People
+Status: Active social hazard.
+Category: Human facsimile, lure organism, false distress signal.
+Known associations: Woodcrawlers, The Iris, repeated words, stiff movement, imitation failure.
+Activity summary: Public lore identifies Fake People as facsimiles of humans created by aliens from The Iris. Reports describe stiff or odd movement, frozen posture, floating or gliding motion, and repeated distress phrases. They may repeat a small set of words, especially cries for help.
+Primary uncertainty: It is unclear whether Fake People are independent organisms, damaged replicas, controlled lures, or intermediate results of Woodcrawler processing.
+Current location data: abandoned homes, exterior doorways, fogged windows, empty school corridors, and roads where a lone person is seen standing without destination.
+Common report language: wrong walking, help me repeated, no footfall, face without recognition, family member not family member.
+
+APSO-WR-004
+Name: The Wretch
+Status: Dormant with periodic motion signatures.
+Category: Reanimated animal mass, Iris-linked assimilator.
+Known associations: Moonlight Acres, Deep Root Disease, sprouts, assimilation, dormant decades.
+Activity summary: Public lore describes The Wretch as formerly a grizzly bear that was sacrificed to The Iris and reanimated. It mutated into a large decomposing creature and later assimilated multiple victims. Associated victims may remain conscious within the mass according to recovered lore interpretations.
+Primary uncertainty: Current records do not establish whether The Wretch is a singular entity, a class of entity, or a root-based failure state.
+Current location data: camp ruins, sealed cabin structures, animal trails with dragged soil, old party halls, and boarded recreation areas.
+Common report language: old bones, claws on the cabin, bear that stands wrong, sleeping mass, voices inside the wall.
+
+APSO-VC-MIM-006
+Name: Mimic / Trucidatum Carnis
+Status: Active mobile hazard.
+Category: Vita Carnis hostile organism, ambush predator, human-shape imitation risk.
+Known associations: The Crawl, juvenile stage, adult stage, poor-distance recognition, night exterior motion.
+Activity summary: Vita Carnis lore describes Mimics as members of the Carnis family. Juvenile Mimics separate from the Crawl and resemble thin relatives of Trimmings with four appendages. Mimics use ambush tactics and target increasingly larger prey as they mature. Public descriptions often frame them as human-adjacent shapes, sometimes mistaken at a distance for a person.
+Primary uncertainty: Local Artemis records do not confirm whether all humanoid sightings are Mimics, Fake People, or unrelated false positives.
+Current location data: tree lines, exterior windows, sheds, garages, rural roads, yards near Crawl growth, and places where a person is seen waving from too far away.
+Common report language: tall figure near window, person in the dark, not a person, wrong elbows, smile without eyes, voice of a loved one outside.
+
+APSO-VC-HAR-003
+Name: Harvester / Congregentur Carnis
+Status: Active northern migration watch.
+Category: Vita Carnis hostile plant-like specimen.
+Known associations: The Crawl, woodland forests, surface tendrils, large prey, hidden perimeter.
+Activity summary: Vita Carnis lore describes Harvesters as bulbous plant-like Carnis specimens connected to the Crawl. The main bulb is about three meters tall and two meters across, with tendrils reaching long distances. Records describe two tendril types: surface tendrils with spine structures and nutrient-absorbing tendrils that react to blood and organic matter.
+Primary uncertainty: Artemis records treat Harvester locations as unreliable because the visible bulb may not represent the full danger radius.
+Current location data: northern woodland edges, hiking trails, ditches near dense vegetation, recently disturbed forest soil, and areas with sudden animal silence.
+Common report language: red bulb, flat tendrils, wrong roots, blood in soil, trail ended, plant that hunts.
+
+APSO-VC-CRAWL-014
+Name: The Crawl / Scandere Carnis
+Status: Active growth-monitoring watch.
+Category: Vita Carnis foundational organism, growth network, signal affinity record.
+Known associations: tendril growth, soil nutrients, photosynthesis-like behavior, food or fertilizer usage in lore, node production.
+Activity summary: Vita Carnis lore describes the Crawl as a growth of meaty tendrils with vine, mold, and fungus-like patterns. It absorbs water and organic matter, processes nutrients, and can produce nodes that become other organisms such as Trimmings. Public lore also says objects that produce signals may attract Crawl growth.
+Primary uncertainty: Artemis records treat signal-attraction as relevant to broadcast horror scenarios because Artemis itself is a signal device.
+Current location data: relay antennas, radio rooms, abandoned kitchens, field transmitters, basement wiring, and locations where red tendrils approach powered equipment.
+Common report language: meat vines, red cable not cable, signal covered, radio swallowed, roots around the antenna.
+
+APSO-VC-MONO-001
+Name: Monolith / Coelum Carnis
+Status: Distant resonance watch.
+Category: Vita Carnis large hostile organism, immobile tower form, networked underground root structure.
+Known associations: seven documented Monoliths, Hudson Bay island, Singularity, 120 meter height, circular formation.
+Activity summary: Vita Carnis lore describes Monoliths as enormous woven-meat tower organisms, around 120 meters tall, arranged around a circular area on a Hudson Bay island. They are rooted deeply into the ground and networked underground. They are normally silent and still in public summaries.
+Primary uncertainty: Artemis local records do not place Monoliths in the North Sector. Current mention is for long-range signal resonance and fiction-lore awareness.
+Current location data: long-range only, no local physical confirmation.
+Common report language: tower of flesh, quiet red pillar, hole in the head, circle in the ground, no birds near it.
+
+APSO-VC-SING-001
+Name: Singularity / Verum Carnis
+Status: Restricted reference.
+Category: Vita Carnis central intelligence entity.
+Known associations: seven known Singularities, C.A.R.C.A.S. containment, Hudson Bay island, Monolith ring, intelligence, planning, transmission.
+Activity summary: Vita Carnis lore describes the Singularity as the eighth and final member of the Carnis family. There are seven known Singularities in public lore, formerly spread across the world and later contained by C.A.R.C.A.S. after Facility-0 events. The Hudson Bay island Singularity is especially notable and is associated with the Monoliths.
+Primary uncertainty: The relation between Singularity, Crawl, Monolith, and other Carnis organisms remains incomplete in public summaries.
+Current location data: long-range restricted reference, no local physical confirmation.
+Common report language: red command point, thinking meat, signal inside the island, seven minds, no movement but active.
+
+GHE ENTITY DATA: THE IRIS
+Name: The Iris.
+Category: sentient planet or planet-like entity.
+Function in lore: mastermind or central intelligence behind invasion-related events.
+Known associations: Woodcrawlers, Roots, Gardeners, the alteration of life on Earth, and cosmic-scale influence.
+Signal interpretation: Artemis treats Iris-linked incidents as high-level events involving both biological contamination and astronomical signal distortion.
+Field signs in fiction: impossible planetary references, false Neptune data, organic transformation, nonhuman intelligence behind natural forms.
+
+GHE ENTITY DATA: ROOTS
+Name: Roots.
+Category: small parasite-like organisms.
+Origin in lore: The Iris.
+Associated condition: Deep Root Disease.
+Development data: bulbs on skin, root formation, sprout progression, bone branching, immobilization, and conversion into human-shaped fleshy strands.
+Late-stage outcome: Nature's Mockery formation.
+Victim state: lore records imply victims may remain alive or conscious in late stages.
+Field signs: blister-like bulbs, discoloration near root base, new growth beneath skin, unusual bone sensations, stopped dreaming, memory failure, and plantlike growth in rooms without soil.
+
+GHE ENTITY DATA: NATURE'S MOCKERY
+Name: Nature's Mockery.
+Category: final-stage Deep Root manifestation.
+First public appearance as hazard: dangerous plant or plantlike growth to avoid.
+Contact effects in lore summaries: hallucinations, muscular paralysis, body disfigurement, flesh decay.
+Late-stage data: infected victims decay into Nature's Mockery instances. Mature instances may produce or birth an unknown occupant.
+Speech data: instances repeat sentences spoken to them. Original speech not confirmed.
+Victim state: some lore records imply victims remain alive and conscious during late stages.
+Artemis record classification: plant-form mimic hazard; high psychological impact; low trust audio source.
+Current Artemis active case count: 5 suspected growths, 2 repeating-audio sites, 1 interior-occupant uncertainty.
+
+GHE ENTITY DATA: WOODCRAWLERS
+Name: Woodcrawler.
+Alternate public name: Skinwalker in some in-universe references.
+Category: Iris-linked arachnid-like alien.
+Known behavior: silent traversal, hunting across terrain, burrowing under homes, attack from beneath structures, creation or involvement in Fake People.
+Physical description: spider-like or harvestman-like limbs, partial silhouettes, large reflective eye, taller than a person.
+House association: homes of large families, floorboards, crawlspaces, door noises, and below-surface movement.
+Artemis record classification: structural breach hazard.
+Current Artemis active case count: 8 acoustic floor events, 4 door-percussion events, 2 probable subfloor breaches.
+
+GHE ENTITY DATA: FAKE PEOPLE
+Name: Fake People.
+Category: facsimile humans created by aliens from The Iris.
+Known appearance: normal human outline with stiff, odd, gliding, or frozen movement.
+Known behavior: repetition of a few words, especially calls for help.
+Primary danger: lure behavior and false familiarity.
+Known vulnerability in lore: fire is mentioned as preventing reanimation in public summaries, though Artemis records do not treat this as operational guidance.
+Artemis record classification: false-human social hazard.
+Current Artemis active case count: 9 reported figures, 4 voice-lure events, 2 family-member imitation claims.
+
+GHE ENTITY DATA: THE WRETCH
+Name: The Wretch.
+Origin summary: formerly a grizzly bear at Moonlight Acres Family Camp, sacrificed to The Iris and reanimated.
+Progression: initial reanimation, sprout influence, mutation, decomposition, assimilation of victims, dormancy, later reactivation.
+Associated persons in public lore: Glenn Arthur, Mary Dean, Barry Johnson, Jack Dean.
+Associated hazard: Deep Root Disease exposure from The Wretch.
+Victim state note: lore implies assimilated victims may remain alive or aware.
+Artemis record classification: dormant mass entity.
+Current Artemis active case count: 1 long-range dormant signature, 0 local confirmations.
+
+VITA CARNIS ENTITY DATA: THE CRAWL
+Name: Scandere Carnis.
+Common name: The Crawl.
+Category: foundational growth organism in the Carnis family.
+Physical data: red meaty tendrils resembling vines, mold, fungi, or intestinal growth.
+Growth data: absorbs water and organic matter; processes nutrients through vein-like and organ-like structures; performs a photosynthesis-like process through darker branches.
+Ecology data: old branches decay into nutrient-rich soil, increasing plant growth and changing animal populations nearby.
+Human-use data in lore: cultivated for fertilizer and potential food use, though appearance and taste limit culinary acceptance.
+Signal data: objects producing signals may attract Crawl growth.
+Node data: nodes can grow on branches and detach as organisms such as Trimmings.
+Artemis record classification: growth network; signal-adjacent hazard.
+Current Artemis active case count: 6 antenna-growth reports, 3 basement tendril reports, 1 active node observation.
+
+VITA CARNIS ENTITY DATA: MIMIC
+Name: Trucidatum Carnis.
+Common name: Mimic.
+Category: mobile hostile Carnis organism.
+Development data: juvenile Mimics separate from the Crawl; early forms resemble Trimming relatives but are thin, sleek, and four-limbed.
+Behavior data: ambush hunting, increasing prey size with maturity, surprise-based attacks.
+Public fear profile: often treated as humanoid or person-like when seen at distance.
+Artemis record classification: exterior silhouette hazard.
+Current Artemis active case count: 7 humanoid-shape reports, 2 window-standing events, 1 repeated waving event.
+
+VITA CARNIS ENTITY DATA: HARVESTER
+Name: Congregentur Carnis.
+Common name: Harvester.
+Category: hostile plant-like Carnis organism connected to the Crawl.
+Physical data: central bulb around three meters tall and two meters across; dark red flesh; shallow tendrils; tendril range can be very large in public lore.
+Tendril data: bulky flat tendrils with spines; nutrient-absorbing tendrils; blood-reactive movement in lore.
+Behavior data: targets large animals, conserves energy, creates nutrient-rich environments by processing prey, may relocate slowly when needed.
+Artemis record classification: hidden-radius woodland hazard.
+Current Artemis active case count: 2 probable bulbs, 5 no-return trail reports, 1 animal-silence radius.
+
+VITA CARNIS ENTITY DATA: HOST OF INFLUENCE
+Name: Imperium Carnis.
+Common name: Host of Influence.
+Category: rooted Carnis organism; behavioral influence hazard.
+Physical data: semi-humanoid upper structure, no legs, lower body made of fibrous tissue and tendrils rooted into ground.
+Sensing data: faceplate sensors detect electromagnetic fields in public lore.
+Spore data: spores affect behavior after inhalation in lore.
+Symptom-like lore data: restlessness, sluggish movement, numb joints, lack of coordination, dizziness, migraines, impaired speech, tremors, directional walking toward Host.
+Duration lore data: effects may wear off after a time window if the organism does not reach the Host.
+Artemis record classification: airborne influence fiction-hazard.
+Current Artemis active case count: 3 orange-dust reports, 2 directional-walking reports, 0 confirmed Hosts.
+
+VITA CARNIS ENTITY DATA: MONOLITH
+Name: Coelum Carnis.
+Common name: Monolith.
+Category: enormous hostile Carnis organism.
+Physical data: roughly 120 meters tall; tightly woven meat fiber; two massive legs; many rope-like side appendages; triangular head with circular hole.
+Location data in lore: seven documented Monoliths on a Hudson Bay island, arranged in a ring around the Singularity.
+Behavior data: typically silent and still; rooted deeply into the ground; networked underground.
+Artemis record classification: long-range fiction-lore entity; not locally confirmed.
+Current Artemis active case count: 0 local, 1 distant resonance file.
+
+VITA CARNIS ENTITY DATA: SINGULARITY
+Name: Verum Carnis.
+Common name: Singularity.
+Category: final member of the Carnis family; intelligence entity.
+Known count in lore: seven known Singularities.
+Containment data: associated with C.A.R.C.A.S. containment after Facility-0 events in public summaries.
+Personality data: described as intelligent, plotting, and transmitting information.
+Association data: linked with Monoliths and Carnis control structures.
+Artemis record classification: restricted reference intelligence.
+Current Artemis active case count: 0 local, restricted file only.

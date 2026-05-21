@@ -1,0 +1,229 @@
+EAS DISEASE AND VIRUS DATA
+==========================
+
+APSO-DRD-032
+Name: Deep Root Disease / Deep Root Virus
+Status: Active containment watch.
+Category: Biological anomaly, parasitic root-stage infection, transformation hazard.
+Known associations: Roots, bulbs, sprouts, vessel-stage infection, Nature's Mockery, Iris-linked growth signatures.
+Activity summary: Reports describe root-like growth patterns, skin bulb formation, tissue discoloration, immobilization, altered recall, dream cessation, and late-stage conversion into nonstandard organic structures. Current Artemis records treat Deep Root Disease and Deep Root Virus as two labels for the same family of fictional root-linked hazards. Disease is used in older recovered tapes. Virus is used by newer Artemis internal files.
+Primary uncertainty: It is not clear whether the root agent is biological, extraterrestrial, fungal, parasitic, or a composite of all four.
+Common report language: new bones, stopped dreaming, name recall failure, bulb stage, root stage, sprout stage, vessel conversion, mockery formation.
+Current location data: North Sector tree line, abandoned storm shelter three, old lake cabins, culvert access path B, and the south foundation corridor.
+
+APSO-NM-011
+Name: Nature's Mockery
+Status: Active observation.
+Category: Late-stage Deep Root manifestation.
+Known associations: Deep Root Disease, Roots, The Iris, repeated speech, plant-like body mass, living victim persistence.
+Activity summary: Nature's Mockery instances are recorded as dangerous plant-like or fungus-like bodies connected to final-stage Deep Root infection. Public lore records describe contact effects including hallucination, muscular paralysis, body disfigurement, and flesh decay. Some records describe victims as conscious during late-stage conversion. Instances may repeat sentences spoken to them rather than generate original speech.
+Primary uncertainty: Some records imply an occupant or secondary organism may emerge from the interior of a mature instance, but the nature of the occupant is unconfirmed.
+Current location data: wooded ditches, overgrown drainage areas, empty bedrooms with soil intrusion, derelict greenhouses, and rooms where vines are present without a known root source.
+Common report language: plant not plant, copied vegetation, speaking shrub, voice from the ditch, hollow leaves, face in the root mass.
+
+APSO-VC-HOST-002
+Name: Host of Influence / Imperium Carnis
+Status: Active spore-monitoring watch.
+Category: Vita Carnis rooted organism, behavioral influence hazard.
+Known associations: spores, altered coordination, directional walking, electromagnetic sensing, Nutrire-linked materials.
+Activity summary: Vita Carnis lore describes the Host of Influence as a semi-humanoid organism rooted into the ground by fibrous tissue and tendrils. It can release spores that alter behavior after inhalation. Lore records describe restlessness, sluggish movement, numb joints, poor coordination, dizziness, migraines, impaired speech, tremors, and eventual movement toward the Host within several hours.
+Primary uncertainty: Artemis records classify all Host spore data as fictional reference and not as real medical guidance.
+Current location data: empty lots with fine orange dust, abandoned gardens, wind-exposed roads, low fields after sunset, and indoor rooms where powder appears near vents.
+Common report language: orange dust, walking north without reason, knees locked, jaw shaking, voice slurring, no memory of leaving.
+
+GHE ENTITY DATA: ROOTS
+Name: Roots.
+Category: small parasite-like organisms.
+Origin in lore: The Iris.
+Associated condition: Deep Root Disease.
+Development data: bulbs on skin, root formation, sprout progression, bone branching, immobilization, and conversion into human-shaped fleshy strands.
+Late-stage outcome: Nature's Mockery formation.
+Victim state: lore records imply victims may remain alive or conscious in late stages.
+Field signs: blister-like bulbs, discoloration near root base, new growth beneath skin, unusual bone sensations, stopped dreaming, memory failure, and plantlike growth in rooms without soil.
+
+GHE ENTITY DATA: DEEP ROOT DISEASE / DEEP ROOT VIRUS
+Name variants: Deep Root Disease, Deep Root Virus.
+Category: fictional root-stage infection.
+Source-aligned staging labels: roots, contraction, bulbs, diagnosis, sprouts.
+Fictional progression summary:
+Stage 0: exposure suspected.
+Stage 1: bulb formation and discoloration.
+Stage 2: root extension beneath tissue.
+Stage 3: sprout activity and altered anatomy.
+Stage 4: vessel-status behavior and identity degradation.
+Stage 5: Nature's Mockery conversion.
+Stage 6: unknown emergence event.
+Associated cognitive questions in recovered lore: memory of mother, dream cessation, sensation of new bones.
+Artemis case notation: DRD and DRV are cross-indexed because residents use both terms.
+Fictional differential categories: fungal contamination, parasitic growth, extraterrestrial biomatter, neurological interference, and identity corruption.
+Current Artemis active case count: 14 suspected, 3 probable, 1 confirmed conversion, 0 cleared.
+
+GHE ENTITY DATA: NATURE'S MOCKERY
+Name: Nature's Mockery.
+Category: final-stage Deep Root manifestation.
+First public appearance as hazard: dangerous plant or plantlike growth to avoid.
+Contact effects in lore summaries: hallucinations, muscular paralysis, body disfigurement, flesh decay.
+Late-stage data: infected victims decay into Nature's Mockery instances. Mature instances may produce or birth an unknown occupant.
+Speech data: instances repeat sentences spoken to them. Original speech not confirmed.
+Victim state: some lore records imply victims remain alive and conscious during late stages.
+Artemis record classification: plant-form mimic hazard; high psychological impact; low trust audio source.
+Current Artemis active case count: 5 suspected growths, 2 repeating-audio sites, 1 interior-occupant uncertainty.
+
+VITA CARNIS ENTITY DATA: HOST OF INFLUENCE
+Name: Imperium Carnis.
+Common name: Host of Influence.
+Category: rooted Carnis organism; behavioral influence hazard.
+Physical data: semi-humanoid upper structure, no legs, lower body made of fibrous tissue and tendrils rooted into ground.
+Sensing data: faceplate sensors detect electromagnetic fields in public lore.
+Spore data: spores affect behavior after inhalation in lore.
+Symptom-like lore data: restlessness, sluggish movement, numb joints, lack of coordination, dizziness, migraines, impaired speech, tremors, directional walking toward Host.
+Duration lore data: effects may wear off after a time window if the organism does not reach the Host.
+Artemis record classification: airborne influence fiction-hazard.
+Current Artemis active case count: 3 orange-dust reports, 2 directional-walking reports, 0 confirmed Hosts.
+
+PUBLIC HEALTH AND EPIDEMIOLOGY REFERENCE DATA
+These entries are real terminology references used to give fictional Artemis reports more credible vocabulary. They are not medical instructions.
+
+Term: Incubation period.
+Definition: time between exposure to an infectious disease and the start of symptoms.
+Artemis fictional equivalent: delay between contact with a hazard and first observable anomaly.
+
+Term: Exposure.
+Definition: contact with a hazard, infectious agent, contaminated surface, vector, animal, food, water, respiratory droplets, or other source.
+Artemis fictional equivalent: contact, proximity, signal exposure, spore inhalation, touch event, voice-response event, or unexplained environmental contact.
+
+Term: Symptom onset.
+Definition: moment when signs or symptoms begin after exposure.
+Artemis fictional equivalent: first report of physical change, memory change, movement change, voice repetition, dream loss, or abnormal behavior.
+
+Term: Quarantine.
+Definition: separation and restriction of movement for people who may have been exposed but are not known to be ill.
+Artemis fictional equivalent: holding zone, observation status, exposure watch, advisory perimeter.
+
+Term: Isolation.
+Definition: separation of a person known or suspected to be infected or ill from those who are not infected.
+Artemis fictional equivalent: confirmed hazard separation, sealed room, inactive wing, or contained signal area.
+
+Term: Transmission route.
+Definition: the pathway by which a disease agent or hazard moves from source to host.
+Reference categories: direct contact, indirect contact, droplet, airborne, vector-borne, foodborne, waterborne, environmental exposure.
+Artemis fictional equivalents: touch, root contact, spore inhalation, signal exposure, voice lure, visual lure, soil contamination, structure breach.
+
+Term: Surveillance.
+Definition: systematic collection, analysis, and interpretation of health or hazard data.
+Artemis fictional equivalent: signal logs, public reports, sensor readings, tape archive review, incident registry.
+
+Term: Cluster.
+Definition: grouping of cases in time, place, or shared exposure.
+Artemis fictional equivalent: multiple residents reporting the same voice, growth, dream loss, motion pattern, or station tone.
+
+Term: Case classification.
+Common categories: suspected, probable, confirmed, cleared, unresolved.
+Artemis fictional equivalents: unverified signal, probable anomaly, confirmed advisory, false positive, dormant file.
+
+Term: Risk communication.
+Definition: exchange of information about risks during an emergency.
+Artemis fictional equivalent: public alert, broadcast advisory, emergency recording, station bulletin.
+
+FICTIONAL MEDICAL-STYLE OBSERVATION FIELDS
+Field: report_id.
+Example: APSO-DRD-032-A.
+
+Field: report_status.
+Allowed data values: suspected, probable, confirmed, unresolved, dormant, cleared, restricted.
+
+Field: exposure_type.
+Allowed data values: contact, proximity, inhalation, soil, water, signal, visual, auditory, unknown.
+
+Field: onset_window.
+Allowed data values: immediate, hours, days, weeks, delayed, unknown.
+
+Field: symptom_cluster.
+Allowed data values: neurological, dermatological, respiratory, musculoskeletal, behavioral, perceptual, signal-related, anatomical, identity-related.
+
+Field: environmental_marker.
+Allowed data values: wet soil, root material, red tendril, orange dust, repeated audio, low-band tone, floor vibration, door percussion, static image, missing animal sounds.
+
+Field: final_observation.
+Allowed data values: stable, worsening, repeating speech, immobilized, converted, missing, dormant, signal lost.
+
+FICTIONAL CASE BANK
+Case APSO-DRD-032-A
+Associated advisory: Deep Root Disease.
+Location: Shelter 3 lower hall.
+Status: probable.
+Exposure type: soil and root contact.
+Onset window: delayed.
+Observed markers: wrist bulb, dream cessation, name recall failure, discoloration around ankle, new-bone sensation.
+Environmental marker: damp soil under concrete.
+Final observation: unresolved.
+
+Case APSO-NM-011-B
+Associated advisory: Nature's Mockery.
+Location: Lake cabin 4.
+Status: confirmed.
+Exposure type: proximity and repeated audio.
+Onset window: unknown.
+Observed markers: plant-like growth in bedroom, repeated voice sample, curtains moving without wind, organic interior movement.
+Environmental marker: wet root mass near bedframe.
+Final observation: dormant but active audio repetition.
+
+Case APSO-WC-027-C
+Associated advisory: Woodcrawler.
+Location: Family residence block 6.
+Status: probable.
+Exposure type: structural breach.
+Onset window: immediate.
+Observed markers: knocking beneath floor, child voice from crawlspace, floorboards flexing upward, single reflective eye under hallway vent.
+Environmental marker: subfloor vibration.
+Final observation: signal lost.
+
+Case APSO-FP-018-D
+Associated advisory: Fake People.
+Location: Old elementary road.
+Status: suspected.
+Exposure type: visual and auditory.
+Onset window: immediate.
+Observed markers: figure standing in rain without wet clothing, repeated request for help, no visible breath, walking without shoulder motion.
+Environmental marker: repeated audio at same volume despite distance.
+Final observation: unresolved.
+
+Case APSO-VC-MIM-006-E
+Associated advisory: Mimic.
+Location: Shed line behind North Sector homes.
+Status: probable.
+Exposure type: visual.
+Onset window: immediate.
+Observed markers: tall figure waving from darkness, elbow angle inconsistent with human movement, smile observed without eye motion.
+Environmental marker: exterior motion near window.
+Final observation: moved behind tree line.
+
+Case APSO-VC-HAR-003-F
+Associated advisory: Harvester.
+Location: trail marker 12.
+Status: suspected.
+Exposure type: environmental proximity.
+Onset window: unknown.
+Observed markers: sudden animal silence, red bulb-like mass behind brush, blood-colored roots crossing trail, missing dog report.
+Environmental marker: disturbed soil circle.
+Final observation: area unresolved.
+
+Case APSO-VC-HOST-002-G
+Associated advisory: Host of Influence.
+Location: vacant lot east of Station 7.
+Status: suspected.
+Exposure type: airborne dust.
+Onset window: hours.
+Observed markers: orange dust in vents, dizziness reports, poor coordination, three residents walking toward same field.
+Environmental marker: fine orange powder.
+Final observation: cleared as unconfirmed but retained for pattern matching.
+
+Case APSO-SIGNAL-009-H
+Associated advisory: Gray Carrier Signal.
+Location: Station 7 broadcast room.
+Status: confirmed.
+Exposure type: signal.
+Onset window: immediate.
+Observed markers: tone on inactive receiver, weather report in reverse, tape recording of unknown speaker, clocks lost one minute.
+Environmental marker: low-band carrier tone.
+Final observation: recurring.

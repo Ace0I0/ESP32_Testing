@@ -1,0 +1,68 @@
+EAS AGENCY AND OFFICE DATA
+==========================
+
+FICTIONAL ORGANIZATION INDEX
+Artemis Public Signal Office: fictional public-signal and advisory office used by Artemis EAS Mode.
+North Sector, Station 7: primary monitoring and relay station for simulated Artemis alerts.
+Low-Band Relay Office: fictional signal routing office associated with analog broadcast interruptions.
+Containment Desk: fictional advisory desk referenced in hazard reports and scripted alerts.
+Signal Review Board: fictional review body for advisories, recordings, and station logs.
+
+FICTIONAL ARTEMIS CONTINUITY RECORDS
+
+APSO-CORE-001
+Name: Artemis Public Signal Office
+Type: fictional regional signal-monitoring office.
+Operational role: receives hazard reports, archives analog alerts, maintains fictional advisory registry, produces emergency-style announcements for local narrative use.
+Office culture: calm, formal, procedural, signal-focused, documentation-heavy.
+Public-facing identity: a broadcast office, not a hospital, police department, or real emergency service.
+Internal station design: analog tape deck, local transmitter, weather radio wall, public address output, red status lamp, printed incident binders, and a dead phone line that still rings during high signal activity.
+Current official fiction contacts:
+Business name: Artemis Public Signal Office
+Phone: 1-555-0196
+Email: reports@artemis-signal.local
+Address: 2600 Signal House Road, North Sector, Station 7
+
+APSO-STATION-007
+Name: Station 7
+Location: North Sector, old signal house.
+Structure: two-story brick utility building with underground wire trench, analog broadcast room, locked archive cabinet, shortwave antenna mast, and concrete basement labeled RECEIVING.
+Status: active.
+Unusual property: station clocks lose one minute during signal spikes. Tape reels sometimes contain audio before recording begins.
+Common artifact: unmarked cassette labeled PUBLIC SAFETY COPY.
+
+APSO-SIGNAL-009
+Name: Gray Carrier Signal
+Status: active intermittent.
+Category: broadcast anomaly.
+Description: narrowband tone between stations, strongest near rain, old wood, wet soil, and powered antennas.
+Associated hazards: Crawl signal affinity, Fake People voice repetition, Woodcrawler door percussion, false station identification.
+Acoustic description: low hum, broken three-note chime, reversed weather report, and a steady carrier tone beneath speech.
+Public reports: radios speak before power is connected, television snow forms a doorway shape, emergency tone plays at the wrong hour.
+
+FICTIONAL REPORTING CHANNEL DATA
+Artemis Public Signal Office accepts fictional reports under the following categories:
+- unknown voice report
+- movement near tree line
+- duplicate person report
+- plant growth inside structure
+- root or bulb report
+- red tendril report
+- floor vibration report
+- signal interference report
+- spore or dust report
+- missing animal report
+- wrong-family-member report
+- repeated broadcast report
+- station tone report
+
+Fictional report fields:
+- name or anonymous status
+- location
+- time observed
+- number of witnesses
+- whether a voice was heard
+- whether the object moved
+- whether contact occurred
+- whether signal equipment reacted
+- whether the same event has happened before
