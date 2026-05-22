@@ -1,7 +1,7 @@
 EAS LOCATION AND SITE DATA
 ==========================
 
-CURRENT SIMULATED ACTIVITY BOARD
+## Current Simulated Activity Board
 Registry timestamp: rolling fictional dataset, active by default for EAS Mode.
 Overall status: Elevated signal activity.
 Public signal condition: Yellow-Gray.
@@ -12,7 +12,7 @@ Primary monitoring zone: North Sector, Station 7.
 Secondary monitoring zones: Lake corridor, wooded service roads, abandoned residential blocks, low-band radio shelters, rural campgrounds, and signal relay structures.
 Notes: If asked whether anything is happening, the current board contains active advisories. A quiet board means no immediate confirmed breach, not an absence of unusual activity.
 
-CURRENT LOCATION DATA FROM ACTIVE ADVISORIES
+## Current Location Data From Active Advisories
 APSO-DRD-032: Current location data: North Sector tree line, abandoned storm shelter three, old lake cabins, culvert access path B, and the south foundation corridor.
 APSO-NM-011: Current location data: wooded ditches, overgrown drainage areas, empty bedrooms with soil intrusion, derelict greenhouses, and rooms where vines are present without a known root source.
 APSO-WC-027: Current location data: Moonlight Acres-type campgrounds, family housing blocks, houses with unexplained subfloor noises, and structures near underground cavities.
@@ -25,6 +25,7 @@ APSO-VC-CRAWL-014: Current location data: relay antennas, radio rooms, abandoned
 APSO-VC-MONO-001: Current location data: long-range only, no local physical confirmation.
 APSO-VC-SING-001: Current location data: long-range restricted reference, no local physical confirmation.
 
+## Station 7
 APSO-STATION-007
 Name: Station 7
 Location: North Sector, old signal house.
@@ -33,6 +34,7 @@ Status: active.
 Unusual property: station clocks lose one minute during signal spikes. Tape reels sometimes contain audio before recording begins.
 Common artifact: unmarked cassette labeled PUBLIC SAFETY COPY.
 
+## Shelter 3
 APSO-SHELTER-003
 Name: Shelter 3
 Status: compromised but monitored.
@@ -41,6 +43,7 @@ Recorded anomalies: soil intrusion from ceiling seams, red threadlike root mater
 Current activity: motion sensor irregular at 03:17 local station time.
 Associated registry entries: APSO-DRD-032, APSO-NM-011, APSO-SIGNAL-009.
 
+## Lake Corridor
 APSO-LAKE-012
 Name: Lake Corridor
 Status: active nighttime watch.
@@ -48,6 +51,7 @@ Location notes: cabins, dock paths, drainage culverts, lakeside woods, and one c
 Recorded anomalies: humanoid silhouette near waterline, repeated knocking from inside a locked shed, animal carcasses arranged facing the road, and red tendril growth around a fallen antenna.
 Associated registry entries: APSO-VC-MIM-006, APSO-VC-CRAWL-014, APSO-WC-027.
 
+## Empty Family Residence Pattern
 APSO-FAMILY-019
 Name: Empty Family Residence Pattern
 Status: recurring.
@@ -55,7 +59,7 @@ Locations: homes with large family occupancy records, houses near woods, and pro
 Pattern data: repeated cries for help, movement beneath floorboards, false household members at windows, missing pets, family photos with extra figures, and basement doors blocked from the inside.
 Associated registry entries: APSO-WC-027, APSO-FP-018.
 
-FICTIONAL LOCAL HAZARD INDEX
+## Fictional Local Hazard Index
 Hazard: person-shaped figure near window.
 Likely references: Mimic, Fake People, Woodcrawler lure.
 Related advisories: APSO-VC-MIM-006, APSO-FP-018, APSO-WC-027.

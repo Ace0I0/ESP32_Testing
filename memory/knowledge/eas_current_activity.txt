@@ -1,7 +1,7 @@
 EAS CURRENT ACTIVITY DATA
 =========================
 
-CURRENT SIMULATED ACTIVITY BOARD
+## Current Simulated Activity Board
 Registry timestamp: rolling fictional dataset, active by default for EAS Mode.
 Overall status: Elevated signal activity.
 Public signal condition: Yellow-Gray.
@@ -12,8 +12,9 @@ Primary monitoring zone: North Sector, Station 7.
 Secondary monitoring zones: Lake corridor, wooded service roads, abandoned residential blocks, low-band radio shelters, rural campgrounds, and signal relay structures.
 Notes: If asked whether anything is happening, the current board contains active advisories. A quiet board means no immediate confirmed breach, not an absence of unusual activity.
 
-ACTIVE ADVISORY REGISTRY
+## Active Advisory Registry
 
+## Deep Root Disease
 APSO-DRD-032
 Name: Deep Root Disease / Deep Root Virus
 Status: Active containment watch.
@@ -24,6 +25,7 @@ Primary uncertainty: It is not clear whether the root agent is biological, extra
 Common report language: new bones, stopped dreaming, name recall failure, bulb stage, root stage, sprout stage, vessel conversion, mockery formation.
 Current location data: North Sector tree line, abandoned storm shelter three, old lake cabins, culvert access path B, and the south foundation corridor.
 
+## Nature's Mockery
 APSO-NM-011
 Name: Nature's Mockery
 Status: Active observation.
@@ -34,6 +36,7 @@ Primary uncertainty: Some records imply an occupant or secondary organism may em
 Current location data: wooded ditches, overgrown drainage areas, empty bedrooms with soil intrusion, derelict greenhouses, and rooms where vines are present without a known root source.
 Common report language: plant not plant, copied vegetation, speaking shrub, voice from the ditch, hollow leaves, face in the root mass.
 
+## Woodcrawler
 APSO-WC-027
 Name: Woodcrawler
 Status: Active perimeter watch.
@@ -44,6 +47,7 @@ Primary uncertainty: Full anatomy is rarely observed. Reports mention long limbs
 Current location data: Moonlight Acres-type campgrounds, family housing blocks, houses with unexplained subfloor noises, and structures near underground cavities.
 Common report language: it is under the floor, they stole their voices, footstep without weight, knocking from beneath, door vibration without a person present.
 
+## Fake People
 APSO-FP-018
 Name: Fake People
 Status: Active social hazard.
@@ -54,6 +58,7 @@ Primary uncertainty: It is unclear whether Fake People are independent organisms
 Current location data: abandoned homes, exterior doorways, fogged windows, empty school corridors, and roads where a lone person is seen standing without destination.
 Common report language: wrong walking, help me repeated, no footfall, face without recognition, family member not family member.
 
+## The Wretch
 APSO-WR-004
 Name: The Wretch
 Status: Dormant with periodic motion signatures.
@@ -64,6 +69,7 @@ Primary uncertainty: Current records do not establish whether The Wretch is a si
 Current location data: camp ruins, sealed cabin structures, animal trails with dragged soil, old party halls, and boarded recreation areas.
 Common report language: old bones, claws on the cabin, bear that stands wrong, sleeping mass, voices inside the wall.
 
+## Mimic
 APSO-VC-MIM-006
 Name: Mimic / Trucidatum Carnis
 Status: Active mobile hazard.
@@ -74,6 +80,7 @@ Primary uncertainty: Local Artemis records do not confirm whether all humanoid s
 Current location data: tree lines, exterior windows, sheds, garages, rural roads, yards near Crawl growth, and places where a person is seen waving from too far away.
 Common report language: tall figure near window, person in the dark, not a person, wrong elbows, smile without eyes, voice of a loved one outside.
 
+## Harvester
 APSO-VC-HAR-003
 Name: Harvester / Congregentur Carnis
 Status: Active northern migration watch.
@@ -84,6 +91,7 @@ Primary uncertainty: Artemis records treat Harvester locations as unreliable bec
 Current location data: northern woodland edges, hiking trails, ditches near dense vegetation, recently disturbed forest soil, and areas with sudden animal silence.
 Common report language: red bulb, flat tendrils, wrong roots, blood in soil, trail ended, plant that hunts.
 
+## Host of Influence
 APSO-VC-HOST-002
 Name: Host of Influence / Imperium Carnis
 Status: Active spore-monitoring watch.
@@ -94,6 +102,7 @@ Primary uncertainty: Artemis records classify all Host spore data as fictional r
 Current location data: empty lots with fine orange dust, abandoned gardens, wind-exposed roads, low fields after sunset, and indoor rooms where powder appears near vents.
 Common report language: orange dust, walking north without reason, knees locked, jaw shaking, voice slurring, no memory of leaving.
 
+## The Crawl
 APSO-VC-CRAWL-014
 Name: The Crawl / Scandere Carnis
 Status: Active growth-monitoring watch.
@@ -104,6 +113,7 @@ Primary uncertainty: Artemis records treat signal-attraction as relevant to broa
 Current location data: relay antennas, radio rooms, abandoned kitchens, field transmitters, basement wiring, and locations where red tendrils approach powered equipment.
 Common report language: meat vines, red cable not cable, signal covered, radio swallowed, roots around the antenna.
 
+## Monolith
 APSO-VC-MONO-001
 Name: Monolith / Coelum Carnis
 Status: Distant resonance watch.
@@ -114,6 +124,7 @@ Primary uncertainty: Artemis local records do not place Monoliths in the North S
 Current location data: long-range only, no local physical confirmation.
 Common report language: tower of flesh, quiet red pillar, hole in the head, circle in the ground, no birds near it.
 
+## Singularity
 APSO-VC-SING-001
 Name: Singularity / Verum Carnis
 Status: Restricted reference.

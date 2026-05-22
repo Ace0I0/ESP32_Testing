@@ -1,6 +1,7 @@
 EAS CREATURE AND ENTITY DATA
 ============================
 
+## Nature's Mockery
 APSO-NM-011
 Name: Nature's Mockery
 Status: Active observation.
@@ -11,6 +12,7 @@ Primary uncertainty: Some records imply an occupant or secondary organism may em
 Current location data: wooded ditches, overgrown drainage areas, empty bedrooms with soil intrusion, derelict greenhouses, and rooms where vines are present without a known root source.
 Common report language: plant not plant, copied vegetation, speaking shrub, voice from the ditch, hollow leaves, face in the root mass.
 
+## Woodcrawler
 APSO-WC-027
 Name: Woodcrawler
 Status: Active perimeter watch.
@@ -21,6 +23,7 @@ Primary uncertainty: Full anatomy is rarely observed. Reports mention long limbs
 Current location data: Moonlight Acres-type campgrounds, family housing blocks, houses with unexplained subfloor noises, and structures near underground cavities.
 Common report language: it is under the floor, they stole their voices, footstep without weight, knocking from beneath, door vibration without a person present.
 
+## Fake People
 APSO-FP-018
 Name: Fake People
 Status: Active social hazard.
@@ -31,6 +34,7 @@ Primary uncertainty: It is unclear whether Fake People are independent organisms
 Current location data: abandoned homes, exterior doorways, fogged windows, empty school corridors, and roads where a lone person is seen standing without destination.
 Common report language: wrong walking, help me repeated, no footfall, face without recognition, family member not family member.
 
+## The Wretch
 APSO-WR-004
 Name: The Wretch
 Status: Dormant with periodic motion signatures.
@@ -41,6 +45,7 @@ Primary uncertainty: Current records do not establish whether The Wretch is a si
 Current location data: camp ruins, sealed cabin structures, animal trails with dragged soil, old party halls, and boarded recreation areas.
 Common report language: old bones, claws on the cabin, bear that stands wrong, sleeping mass, voices inside the wall.
 
+## Mimic
 APSO-VC-MIM-006
 Name: Mimic / Trucidatum Carnis
 Status: Active mobile hazard.
@@ -51,6 +56,7 @@ Primary uncertainty: Local Artemis records do not confirm whether all humanoid s
 Current location data: tree lines, exterior windows, sheds, garages, rural roads, yards near Crawl growth, and places where a person is seen waving from too far away.
 Common report language: tall figure near window, person in the dark, not a person, wrong elbows, smile without eyes, voice of a loved one outside.
 
+## Harvester
 APSO-VC-HAR-003
 Name: Harvester / Congregentur Carnis
 Status: Active northern migration watch.
@@ -61,6 +67,7 @@ Primary uncertainty: Artemis records treat Harvester locations as unreliable bec
 Current location data: northern woodland edges, hiking trails, ditches near dense vegetation, recently disturbed forest soil, and areas with sudden animal silence.
 Common report language: red bulb, flat tendrils, wrong roots, blood in soil, trail ended, plant that hunts.
 
+## The Crawl
 APSO-VC-CRAWL-014
 Name: The Crawl / Scandere Carnis
 Status: Active growth-monitoring watch.
@@ -71,6 +78,7 @@ Primary uncertainty: Artemis records treat signal-attraction as relevant to broa
 Current location data: relay antennas, radio rooms, abandoned kitchens, field transmitters, basement wiring, and locations where red tendrils approach powered equipment.
 Common report language: meat vines, red cable not cable, signal covered, radio swallowed, roots around the antenna.
 
+## Monolith
 APSO-VC-MONO-001
 Name: Monolith / Coelum Carnis
 Status: Distant resonance watch.
@@ -81,6 +89,7 @@ Primary uncertainty: Artemis local records do not place Monoliths in the North S
 Current location data: long-range only, no local physical confirmation.
 Common report language: tower of flesh, quiet red pillar, hole in the head, circle in the ground, no birds near it.
 
+## Singularity
 APSO-VC-SING-001
 Name: Singularity / Verum Carnis
 Status: Restricted reference.
@@ -91,6 +100,7 @@ Primary uncertainty: The relation between Singularity, Crawl, Monolith, and othe
 Current location data: long-range restricted reference, no local physical confirmation.
 Common report language: red command point, thinking meat, signal inside the island, seven minds, no movement but active.
 
+## The Iris
 GHE ENTITY DATA: THE IRIS
 Name: The Iris.
 Category: sentient planet or planet-like entity.
@@ -99,6 +109,7 @@ Known associations: Woodcrawlers, Roots, Gardeners, the alteration of life on Ea
 Signal interpretation: Artemis treats Iris-linked incidents as high-level events involving both biological contamination and astronomical signal distortion.
 Field signs in fiction: impossible planetary references, false Neptune data, organic transformation, nonhuman intelligence behind natural forms.
 
+## Roots
 GHE ENTITY DATA: ROOTS
 Name: Roots.
 Category: small parasite-like organisms.
@@ -109,6 +120,7 @@ Late-stage outcome: Nature's Mockery formation.
 Victim state: lore records imply victims may remain alive or conscious in late stages.
 Field signs: blister-like bulbs, discoloration near root base, new growth beneath skin, unusual bone sensations, stopped dreaming, memory failure, and plantlike growth in rooms without soil.
 
+## Nature's Mockery Reference
 GHE ENTITY DATA: NATURE'S MOCKERY
 Name: Nature's Mockery.
 Category: final-stage Deep Root manifestation.
@@ -120,6 +132,7 @@ Victim state: some lore records imply victims remain alive and conscious during 
 Artemis record classification: plant-form mimic hazard; high psychological impact; low trust audio source.
 Current Artemis active case count: 5 suspected growths, 2 repeating-audio sites, 1 interior-occupant uncertainty.
 
+## Woodcrawler Reference
 GHE ENTITY DATA: WOODCRAWLERS
 Name: Woodcrawler.
 Alternate public name: Skinwalker in some in-universe references.
@@ -130,6 +143,7 @@ House association: homes of large families, floorboards, crawlspaces, door noise
 Artemis record classification: structural breach hazard.
 Current Artemis active case count: 8 acoustic floor events, 4 door-percussion events, 2 probable subfloor breaches.
 
+## Fake People Reference
 GHE ENTITY DATA: FAKE PEOPLE
 Name: Fake People.
 Category: facsimile humans created by aliens from The Iris.
@@ -140,6 +154,7 @@ Known vulnerability in lore: fire is mentioned as preventing reanimation in publ
 Artemis record classification: false-human social hazard.
 Current Artemis active case count: 9 reported figures, 4 voice-lure events, 2 family-member imitation claims.
 
+## The Wretch Reference
 GHE ENTITY DATA: THE WRETCH
 Name: The Wretch.
 Origin summary: formerly a grizzly bear at Moonlight Acres Family Camp, sacrificed to The Iris and reanimated.
@@ -150,6 +165,7 @@ Victim state note: lore implies assimilated victims may remain alive or aware.
 Artemis record classification: dormant mass entity.
 Current Artemis active case count: 1 long-range dormant signature, 0 local confirmations.
 
+## The Crawl Reference
 VITA CARNIS ENTITY DATA: THE CRAWL
 Name: Scandere Carnis.
 Common name: The Crawl.
@@ -163,6 +179,7 @@ Node data: nodes can grow on branches and detach as organisms such as Trimmings.
 Artemis record classification: growth network; signal-adjacent hazard.
 Current Artemis active case count: 6 antenna-growth reports, 3 basement tendril reports, 1 active node observation.
 
+## Mimic Reference
 VITA CARNIS ENTITY DATA: MIMIC
 Name: Trucidatum Carnis.
 Common name: Mimic.
@@ -173,6 +190,7 @@ Public fear profile: often treated as humanoid or person-like when seen at dista
 Artemis record classification: exterior silhouette hazard.
 Current Artemis active case count: 7 humanoid-shape reports, 2 window-standing events, 1 repeated waving event.
 
+## Harvester Reference
 VITA CARNIS ENTITY DATA: HARVESTER
 Name: Congregentur Carnis.
 Common name: Harvester.
@@ -183,6 +201,7 @@ Behavior data: targets large animals, conserves energy, creates nutrient-rich en
 Artemis record classification: hidden-radius woodland hazard.
 Current Artemis active case count: 2 probable bulbs, 5 no-return trail reports, 1 animal-silence radius.
 
+## Host of Influence
 VITA CARNIS ENTITY DATA: HOST OF INFLUENCE
 Name: Imperium Carnis.
 Common name: Host of Influence.
@@ -195,6 +214,7 @@ Duration lore data: effects may wear off after a time window if the organism doe
 Artemis record classification: airborne influence fiction-hazard.
 Current Artemis active case count: 3 orange-dust reports, 2 directional-walking reports, 0 confirmed Hosts.
 
+## Monolith Reference
 VITA CARNIS ENTITY DATA: MONOLITH
 Name: Coelum Carnis.
 Common name: Monolith.
@@ -205,6 +225,7 @@ Behavior data: typically silent and still; rooted deeply into the ground; networ
 Artemis record classification: long-range fiction-lore entity; not locally confirmed.
 Current Artemis active case count: 0 local, 1 distant resonance file.
 
+## Singularity Reference
 VITA CARNIS ENTITY DATA: SINGULARITY
 Name: Verum Carnis.
 Common name: Singularity.

@@ -1,6 +1,7 @@
 EAS DISEASE AND VIRUS DATA
 ==========================
 
+## Deep Root Disease
 APSO-DRD-032
 Name: Deep Root Disease / Deep Root Virus
 Status: Active containment watch.
@@ -11,6 +12,7 @@ Primary uncertainty: It is not clear whether the root agent is biological, extra
 Common report language: new bones, stopped dreaming, name recall failure, bulb stage, root stage, sprout stage, vessel conversion, mockery formation.
 Current location data: North Sector tree line, abandoned storm shelter three, old lake cabins, culvert access path B, and the south foundation corridor.
 
+## Nature's Mockery
 APSO-NM-011
 Name: Nature's Mockery
 Status: Active observation.
@@ -21,6 +23,7 @@ Primary uncertainty: Some records imply an occupant or secondary organism may em
 Current location data: wooded ditches, overgrown drainage areas, empty bedrooms with soil intrusion, derelict greenhouses, and rooms where vines are present without a known root source.
 Common report language: plant not plant, copied vegetation, speaking shrub, voice from the ditch, hollow leaves, face in the root mass.
 
+## Host of Influence
 APSO-VC-HOST-002
 Name: Host of Influence / Imperium Carnis
 Status: Active spore-monitoring watch.
@@ -31,6 +34,7 @@ Primary uncertainty: Artemis records classify all Host spore data as fictional r
 Current location data: empty lots with fine orange dust, abandoned gardens, wind-exposed roads, low fields after sunset, and indoor rooms where powder appears near vents.
 Common report language: orange dust, walking north without reason, knees locked, jaw shaking, voice slurring, no memory of leaving.
 
+## Roots
 GHE ENTITY DATA: ROOTS
 Name: Roots.
 Category: small parasite-like organisms.
@@ -41,6 +45,7 @@ Late-stage outcome: Nature's Mockery formation.
 Victim state: lore records imply victims may remain alive or conscious in late stages.
 Field signs: blister-like bulbs, discoloration near root base, new growth beneath skin, unusual bone sensations, stopped dreaming, memory failure, and plantlike growth in rooms without soil.
 
+## Deep Root Disease Reference
 GHE ENTITY DATA: DEEP ROOT DISEASE / DEEP ROOT VIRUS
 Name variants: Deep Root Disease, Deep Root Virus.
 Category: fictional root-stage infection.
@@ -58,6 +63,7 @@ Artemis case notation: DRD and DRV are cross-indexed because residents use both 
 Fictional differential categories: fungal contamination, parasitic growth, extraterrestrial biomatter, neurological interference, and identity corruption.
 Current Artemis active case count: 14 suspected, 3 probable, 1 confirmed conversion, 0 cleared.
 
+## Nature's Mockery Reference
 GHE ENTITY DATA: NATURE'S MOCKERY
 Name: Nature's Mockery.
 Category: final-stage Deep Root manifestation.
@@ -69,6 +75,7 @@ Victim state: some lore records imply victims remain alive and conscious during 
 Artemis record classification: plant-form mimic hazard; high psychological impact; low trust audio source.
 Current Artemis active case count: 5 suspected growths, 2 repeating-audio sites, 1 interior-occupant uncertainty.
 
+## Host of Influence Reference
 VITA CARNIS ENTITY DATA: HOST OF INFLUENCE
 Name: Imperium Carnis.
 Common name: Host of Influence.
@@ -81,7 +88,7 @@ Duration lore data: effects may wear off after a time window if the organism doe
 Artemis record classification: airborne influence fiction-hazard.
 Current Artemis active case count: 3 orange-dust reports, 2 directional-walking reports, 0 confirmed Hosts.
 
-PUBLIC HEALTH AND EPIDEMIOLOGY REFERENCE DATA
+## Public Health And Epidemiology Reference
 These entries are real terminology references used to give fictional Artemis reports more credible vocabulary. They are not medical instructions.
 
 Term: Incubation period.
@@ -125,7 +132,7 @@ Term: Risk communication.
 Definition: exchange of information about risks during an emergency.
 Artemis fictional equivalent: public alert, broadcast advisory, emergency recording, station bulletin.
 
-FICTIONAL MEDICAL-STYLE OBSERVATION FIELDS
+## Fictional Medical-Style Observation Fields
 Field: report_id.
 Example: APSO-DRD-032-A.
 
@@ -147,7 +154,7 @@ Allowed data values: wet soil, root material, red tendril, orange dust, repeated
 Field: final_observation.
 Allowed data values: stable, worsening, repeating speech, immobilized, converted, missing, dormant, signal lost.
 
-FICTIONAL CASE BANK
+## Fictional Case Bank
 Case APSO-DRD-032-A
 Associated advisory: Deep Root Disease.
 Location: Shelter 3 lower hall.

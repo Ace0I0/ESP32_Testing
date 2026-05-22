@@ -1,6 +1,7 @@
 EAS GENERAL DATA
 ================
 
+## Artemis Public Signal Office
 ARTEMIS PUBLIC SIGNAL OFFICE
 
 EAS MODE LORE DATA FILE
@@ -9,7 +10,7 @@ Purpose: Local reference data for Artemis EAS Mode.
 Classification: Fictional narrative support data with selected public-health terminology references.
 Real-world status: The hazards and agencies in this file are fictional unless explicitly marked as public-health terminology.
 
-CANON-ALIGNED GEMINI HOME ENTERTAINMENT DATA
+## Gemini Home Entertainment Overview
 Series name: Gemini Home Entertainment.
 Creator: Remy Abode.
 Presentation style: fictional VHS tapes, educational videos, instructional tapes, documentaries, home safety material, and mundane media that slowly reveal cosmic and biological horror.
@@ -19,7 +20,7 @@ Central antagonist in public summaries: The Iris, described as a sentient planet
 Common threats: Woodcrawlers, Fake People, Deep Root Disease, Nature's Mockery, Roots, The Wretch.
 Relevant stylistic data: tapes often begin mundane or educational, then introduce impossible instructions, corrupted images, and official-sounding warnings.
 
-CANON-ALIGNED VITA CARNIS DATA
+## Vita Carnis Overview
 Series name: Vita Carnis.
 Creator: Darian Quilloy.
 Presentation style: analog-horror documentary material, government files, research footage, public safety documents, culinary material, containment records, and creature classification media.
@@ -28,7 +29,7 @@ Common organizations in lore: C.A.R.C.A.S., Nutrire-related entities, and a cult
 Core entities: Crawl, Trimmings, Meat Snake, Mimic, Harvester, Host of Influence, Monolith, Singularity.
 Common themes: living meat ecology, biological normalcy through public acceptance, government infiltration, species documentation, and the danger of ordinary-looking instructional media.
 
-ACTIVITY PHRASE BANK DATA
+## Activity Phrase Bank
 The following are fictional sentence fragments found in public alerts, recovered tapes, and Artemis archive cards.
 - Public signal monitoring is active.
 - Advisory record has been updated.
@@ -56,7 +57,7 @@ The following are fictional sentence fragments found in public alerts, recovered
 - The report is not closed.
 - Further information is pending.
 
-ANALOG BROADCAST STYLE REFERENCE DATA
+## Analog Broadcast Style Reference
 Common surface format: calm official announcement, short technical label, plain location, simple risk phrase, limited reassurance, unresolved ending.
 Common visual atmosphere: degraded tape, centered text, analog snow, color bars, incorrect timestamp, static frame, field recording, public office logo, still photograph with one wrong detail.
 Common audio atmosphere: tone burst, warble, detuned chime, tape flutter, dropped syllables, doubled voice, room hum, distorted narrator.
