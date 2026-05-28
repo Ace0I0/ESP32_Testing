@@ -287,6 +287,7 @@ def get_generation_settings(user_text: str) -> dict:
     }
 
 # Decides which file is loaded depending on user input, detecting keywords like the previous function
+# Update: Lot of keywords added and "what-if" scenarios used
 def get_relevant_knowledge_files(user_text: str) -> list[str]:
     text = user_text.lower()
 
@@ -324,7 +325,8 @@ def format_elapsed(seconds: float) -> str:
         return f"{seconds * 1000:.0f} ms"
 
     return f"{seconds:.2f} sec"
-# System prompt builder - Accumulates all needed info so Artemis can function correctly based on the mode chosen
+
+# System prompt builder -> Accumulates all needed info so Artemis can function correctly based on the mode chosen
 def build_system_prompt(identity: dict, mode: dict, user_text: str) -> tuple[str, dict]:
     name = identity.get("name", "Artemis")
     robot_type = identity.get("type", "retro animatronic robot")
@@ -377,7 +379,6 @@ def build_system_prompt(identity: dict, mode: dict, user_text: str) -> tuple[str
     return system_prompt, debug_info
 
 def ask_local_model(user_text: str, system_prompt: str) -> tuple[str, dict]:
-
     settings = get_generation_settings(user_text)
     payload = {
         "model": "local-qwen",
