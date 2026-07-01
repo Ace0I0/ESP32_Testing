@@ -6,8 +6,16 @@ import subprocess
 import urllib.request
 from pathlib import Path
 
+# Cross-file dependencies:
+# - intent_router.py decides which local knowledge files match the user request.
+# - token_budget.py trims those files and sets the model response token limit.
+# If prompt selection looks wrong, inspect route_intent() first, then the budget
+# metadata printed by print_prompt_debug().
+from intent_router import route_intent, print_router_debug
+import token_budget as budget
 
-# Constants to be used for color coding certain output (such as errors and responses)
+
+# ANSI color constants for terminal output. These only affect display text.
 RESET = "\033[0m"
 
 RED = "\033[31m"
@@ -21,15 +29,18 @@ WHITE = "\033[37m"
 BOLD = "\033[1m"
 DIM = "\033[2m"
 
-# Load LM with this URL on PI
+# Local llama.cpp OpenAI-compatible chat endpoint on the Raspberry Pi.
 LLAMA_SERVER_URL = "http://127.0.0.1:8080/v1/chat/completions"
 
+# SAM command-line binary and output path. make_sam_wav() is the only call site
+# that invokes this external process.
 SAM_BINARY = Path("/home/pi/SAM/sam")
 OUTPUT_WAV = Path("/home/pi/SAM/robot_response.wav")
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 
 def find_project_dir(start_dir: Path) -> Path:
+    """Walk upward until the project memory folder is found."""
     for directory in [start_dir, *start_dir.parents]:
         if (directory / "memory").is_dir():
             return directory
@@ -65,34 +76,37 @@ GENERIC_RETRIEVAL_WORDS = {
     "that",
 }
 
-# Defines the basic identity of Artemis
+# Artemis identity and mode files. These JSON files are loaded once at startup
+# and feed directly into the system prompt.
 IDENTITY_PATH = MEMORY_DIR / "identity.json"
 
-# Singlular mode for now, 3 total in the future
 MODE_PATH = MODES_DIR / "EAS.json"
 
 
-# General json loader
 def load_json_file(path: Path) -> dict:
+    """Load a required JSON file and fail loudly when it is missing."""
     if not path.exists():
         raise FileNotFoundError(f"{RED}Missing JSON file: {path}{RESET}")
 
     with path.open("r", encoding="utf-8") as file:
         return json.load(file)
 
-# loads identity json file
 def load_identity() -> dict:
+    """Load Artemis identity settings from memory/identity.json."""
     return load_json_file(IDENTITY_PATH)
 
-# loads mode file
+
 def load_mode() -> dict:
+    """Load the active mode prompt data."""
     return load_json_file(MODE_PATH)
 
-# general list formater (we have stuff saved in a "list" style in stuff like identity.json and EAS.json which is one of our modes)
+
 def format_list(items: list[str]) -> str:
+    """Render prompt rule lists as bullet text for the system prompt."""
     return "\n".join(f"- {item}" for item in items)
 
 def debug_log(message: str) -> None:
+    """Print a dim debug message when LLM_DEBUG is enabled."""
     if LLM_DEBUG:
         print(f"{DIM}{CYAN}[debug] {message}{RESET}")
 
@@ -101,14 +115,17 @@ def estimate_token_count(text: str) -> int:
     return max(1, len(text) // 4) if text else 0
 
 def keyword_matches(text: str, keywords: list[str]) -> int:
+    """Count raw keyword occurrences in text for knowledge-section scoring."""
     lower = text.lower()
     return sum(lower.count(keyword) for keyword in keywords)
 
 def has_any_keyword(text: str, keywords: list[str]) -> bool:
+    """Return whether any keyword appears in text."""
     lower = text.lower()
     return any(keyword in lower for keyword in keywords)
 
 def split_knowledge_sections(text: str) -> list[dict]:
+    """Split a markdown-ish knowledge file into titled sections."""
     sections = []
     current_title = "Overview"
     current_lines = []
@@ -139,6 +156,7 @@ def split_knowledge_sections(text: str) -> list[dict]:
     return [section for section in sections if section["text"]]
 
 def get_knowledge_query_keywords(user_text: str) -> list[str]:
+    """Expand user text into keywords for local section ranking/debug output."""
     words = [
         word.strip(".,!?;:()[]{}\"'")
         for word in user_text.lower().split()
@@ -170,12 +188,20 @@ def get_knowledge_query_keywords(user_text: str) -> list[str]:
     return sorted(specific_keywords or keywords)
 
 def score_section(section: dict, keywords: list[str]) -> int:
+    """Score a parsed knowledge section against the expanded user keywords."""
     title_score = keyword_matches(section["title"], keywords) * 4
     body_score = keyword_matches(section["text"], keywords)
     return title_score + body_score
 
-# Loads the knowledge file which has things like lore (this has different categories as there is too much info to load it all at once)
+
 def load_selected_knowledge(files: list[str], user_text: str) -> tuple[str, list[dict]]:
+    """Legacy section-based loader kept for comparison with token_budget.py.
+
+    build_system_prompt() now uses budget.build_budgeted_knowledge_context().
+    Keep this function documented because it is useful when debugging retrieval
+    behavior, but do not expect it to affect the current prompt unless it is
+    explicitly called again.
+    """
     sections = []
     debug_files = []
     query_keywords = get_knowledge_query_keywords(user_text)
@@ -254,8 +280,8 @@ def load_selected_knowledge(files: list[str], user_text: str) -> tuple[str, list
 
     return "\n\n".join(sections), debug_files
 
-# formats examples listed in modes (may or may not remove this, but with that i have in mind rn, it should be useful)
 def format_examples(examples: list[dict]) -> str:
+    """Format mode example turns for inclusion in the system prompt."""
     lines = []
 
     for example in examples:
@@ -267,12 +293,11 @@ def format_examples(examples: list[dict]) -> str:
 
     return "\n\n".join(lines)
 
-# Sets up a check to see when we need to extend the max tokens and temperature, honestly later i wanna switch this to a physical switch rather than 
-# just a detection for key words
 def get_generation_settings(user_text: str) -> dict:
+    """Choose model generation settings from the current request text."""
     lower = user_text.lower()
 
-    # Current list of words to look out for
+    # Requests containing these phrases are allowed a slightly larger response.
     long_request_words = ["broadcast", "psa", "announcement", "full alert", "longer", "detailed"]
 
     if any(word in lower for word in long_request_words):
@@ -286,48 +311,22 @@ def get_generation_settings(user_text: str) -> dict:
         "temperature": 0.65,
     }
 
-# Decides which file is loaded depending on user input, detecting keywords like the previous function
-# Update: Lot of keywords added and "what-if" scenarios used
-def get_relevant_knowledge_files(user_text: str) -> list[str]:
-    text = user_text.lower()
-
-    files = ["eas_general.txt"] # We load the eas general txt file as this contains a basis for Artemis.
-
-    contact_words = ["contact", "phone", "email", "address", "report this", "report it", "who should", "agency", "office", "call", "send this"]
-    current_activity_words = ["activity", "alert", "update", "happening", "event", "events", "status", "current", "active", "right now", "today", "advisory"]
-    disease_words = ["disease", "virus", "outbreak", "infection", "symptom", "symptoms", "contagion", "medical", "deep root", "root disease", "root virus", "bulb", "sprout"]
-    creature_words = ["creature", "entity", "entities", "monster", "mimic", "woodcrawler", "vita carnis", "gemini", "nature's mockery", "fake people", "wretch", "harvester", "crawl", "singularity", "monolith", "host of influence", "person", "figure", "humanoid", "window", "outside", "wrong walking"]
-    location_words = ["where", "location", "located", "place", "area", "zone", "sector", "station", "shelter", "lake", "road", "tree line"]
-
-    wants_contact = has_any_keyword(text, contact_words)
-
-    if wants_contact:
-        files.append("eas_contacts.txt")
-        files.append("eas_agencies.txt")
-
-    if has_any_keyword(text, current_activity_words) and not wants_contact:
-        files.append("eas_current_activity.txt")
-
-    if has_any_keyword(text, disease_words):
-        files.append("eas_diseases.txt")
-
-    if has_any_keyword(text, creature_words):
-        files.append("eas_creatures.txt")
-
-    if has_any_keyword(text, location_words):
-        files.append("eas_locations.txt")
-
-    return list(dict.fromkeys(files))
-
-# Using for time debugging, so i can see how long each response takes
 def format_elapsed(seconds: float) -> str:
+    """Format elapsed time for human-readable debug timing output."""
     if seconds < 1:
         return f"{seconds * 1000:.0f} ms"
 
     return f"{seconds:.2f} sec"
 
-# System prompt builder -> Accumulates all needed info so Artemis can function correctly based on the mode chosen
 def build_system_prompt(identity: dict, mode: dict, user_text: str) -> tuple[str, dict]:
+    """Build the system prompt and return debug metadata for the full pipeline.
+
+    Important call chain for bug tracing:
+    route_intent(user_text) -> selected files
+    budget.calculate_response_tokens(...) -> max_tokens for llama.cpp
+    budget.build_budgeted_knowledge_context(...) -> local knowledge context
+    budget.enforce_prompt_budget(...) -> final trim before sending the prompt
+    """
     name = identity.get("name", "Artemis")
     robot_type = identity.get("type", "retro animatronic robot")
     voice_engine = identity.get("voice_engine", "SAM")
@@ -337,49 +336,101 @@ def build_system_prompt(identity: dict, mode: dict, user_text: str) -> tuple[str
     response_rules = format_list(mode.get("response_rules", []))
     examples = format_examples(mode.get("example_responses", []))
 
-    selected_files = get_relevant_knowledge_files(user_text)
-    knowledge_text, knowledge_debug = load_selected_knowledge(selected_files, user_text)
+    # Cross-file call: intent_router.py decides which knowledge files to load.
+    route = route_intent(user_text)
+    selected_file_details = route.get("selected_file_details", [])
+    selected_files = route.get("selected_files", [])
 
-    system_prompt = (
-        f"You are {name}, a {robot_type}.\n"
-        f"Your voice engine is {voice_engine}.\n\n"
-        "Core identity rules:\n"
-        f"{core_rules}\n\n"
-        f"Current mode: {mode.get('display_name', 'EAS Mode')}\n"
-        f"Mode name: {mode.get('mode_name', 'eas')}\n"
-        f"Mode description: {mode.get('description', '')}\n"
-        f"Tone: {tone}\n\n"
-        "Mode response rules:\n"
-        f"{response_rules}\n\n"
-        "Example responses:\n"
-        f"{examples}\n\n"
-        "Relevant local knowledge:\n"
-        f"{knowledge_text}\n\n"
-        "Final output rules:\n"
-        f"- Respond as {name}.\n"
-        "- Write in normal English.\n"
-        "- Do not use markdown.\n"
-        "- Keep the response suitable for old robotic text to speech.\n"
+    # Cross-file call: token_budget.py decides how long the answer may be.
+    response_tokens = budget.calculate_response_tokens(selected_file_details, user_text)
+
+    prompt_prefix = [
+        f"You are {name}, a {robot_type}.",
+        f"Your voice engine is {voice_engine}.",
+        "",
+        "Core identity rules:",
+        core_rules,
+        "",
+        f"Current mode: {mode.get('display_name', 'EAS Mode')}",
+        f"Mode name: {mode.get('mode_name', 'eas')}",
+        f"Mode description: {mode.get('description', '')}",
+        f"Tone: {tone}",
+        "",
+        "Mode response rules:",
+        response_rules,
+        "",
+        "Example responses:",
+        examples,
+    ]
+
+    if route.get("intent") != "general_eas_info" or route.get("topics"):
+        prompt_prefix.extend([
+            "",
+            f"Detected intent: {route.get('intent', 'general_eas_info')}",
+            f"Detected topics: {', '.join(route.get('topics', [])) if route.get('topics') else 'none'}",
+        ])
+
+    prompt_suffix = [
+        "",
+        "Final output rules:",
+        f"- Respond as {name}.",
+        "- Write in normal English.",
+        "- Do not use markdown.",
+        "- Keep the response suitable for old robotic text to speech.",
+    ]
+
+    prompt_without_knowledge = "\n".join(prompt_prefix + ["", "Relevant local knowledge:"] + prompt_suffix)
+
+    # Cross-file call: token_budget.py loads and trims the selected knowledge.
+    knowledge_context, knowledge_debug = budget.build_budgeted_knowledge_context(
+        selected_file_details,
+        str(KNOWLEDGE_DIR),
     )
+    budgeted_knowledge_context = budget.enforce_prompt_budget(
+        prompt_without_knowledge,
+        knowledge_context,
+        user_text,
+    )
+
+    # Final prompt assembly happens here, after the knowledge context has been
+    # budgeted and trimmed.
+    system_prompt = "\n".join(
+        prompt_prefix
+        + ["", "Relevant local knowledge:"]
+        + ([budgeted_knowledge_context] if budgeted_knowledge_context else [])
+        + prompt_suffix
+    )
+
+    estimated_final_prompt_tokens = budget.estimate_tokens(system_prompt) + budget.estimate_tokens(user_text)
 
     debug_info = {
         "knowledge_dir": str(KNOWLEDGE_DIR),
         "selected_files": selected_files,
-        "knowledge_files": knowledge_debug,
-        "knowledge_chars": len(knowledge_text),
-        "knowledge_estimated_tokens": estimate_token_count(knowledge_text),
-        "knowledge_char_budget": KNOWLEDGE_CHAR_BUDGET,
+        "selected_file_details": knowledge_debug,
+        "knowledge_chars": len(budgeted_knowledge_context),
+        "knowledge_estimated_tokens": budget.estimate_tokens(budgeted_knowledge_context),
+        "knowledge_token_budget": budget.MAX_KNOWLEDGE_TOKENS,
+        "response_tokens": response_tokens,
+        "max_context_tokens": budget.MAX_CONTEXT_TOKENS,
+        "max_prompt_tokens": budget.MAX_PROMPT_TOKENS,
+        "max_knowledge_tokens": budget.MAX_KNOWLEDGE_TOKENS,
         "query_keywords": get_knowledge_query_keywords(user_text),
+        "router": route,
         "system_prompt_chars": len(system_prompt),
         "system_prompt_estimated_tokens": estimate_token_count(system_prompt),
         "user_chars": len(user_text),
         "user_estimated_tokens": estimate_token_count(user_text),
+        "estimated_final_prompt_tokens": estimated_final_prompt_tokens,
+        "budget_trimmed": budgeted_knowledge_context != knowledge_context,
     }
 
     return system_prompt, debug_info
 
-def ask_local_model(user_text: str, system_prompt: str) -> tuple[str, dict]:
+def ask_local_model(user_text: str, system_prompt: str, response_tokens: int) -> tuple[str, dict]:
+    """Send one chat completion request to the local llama.cpp server."""
     settings = get_generation_settings(user_text)
+    # External service call: this is the only HTTP request to the LLM server.
+    # If responses hang or fail, check LLAMA_SERVER_URL and this payload first.
     payload = {
         "model": "local-qwen",
         "messages": [
@@ -392,7 +443,7 @@ def ask_local_model(user_text: str, system_prompt: str) -> tuple[str, dict]:
                 "content": user_text,
             },
         ],
-        "max_tokens": settings["max_tokens"],
+        "max_tokens": response_tokens,
         "temperature": settings["temperature"],
     }
     request_started = time.perf_counter()
@@ -414,6 +465,7 @@ def ask_local_model(user_text: str, system_prompt: str) -> tuple[str, dict]:
     server_debug = {
         "request_elapsed": request_elapsed,
         "settings": settings,
+        "response_tokens": response_tokens,
         "usage": result.get("usage", {}),
         "timings": result.get("timings", {}),
         "response_chars": len(message),
@@ -423,25 +475,33 @@ def ask_local_model(user_text: str, system_prompt: str) -> tuple[str, dict]:
     return message, server_debug
 
 def print_prompt_debug(debug_info: dict) -> None:
+    """Print router, budget, and prompt-size details for one user turn."""
     if not LLM_DEBUG:
         return
+
+    # Router and budget details are printed only in debug mode.
+    route = debug_info.get("router")
+    if route:
+        print_router_debug(route)
+
+    budget.print_budget_debug(debug_info)
 
     debug_log(f"knowledge folder: {debug_info['knowledge_dir']}")
     debug_log(
         "knowledge retrieval: "
-        f"budget={debug_info['knowledge_char_budget']} chars, "
+        f"budget={debug_info['knowledge_token_budget']} tokens, "
         f"query_keywords={', '.join(debug_info['query_keywords'])}"
     )
     debug_log("selected knowledge files:")
 
-    for file_info in debug_info["knowledge_files"]:
-        status = "loaded" if file_info["exists"] else "missing"
+    for file_info in debug_info["selected_file_details"]:
+        status = "loaded" if file_info.get("exists", True) else "missing"
         debug_log(
-            f"  {file_info['name']} - {status}, "
-            f"{file_info['bytes']} bytes, "
-            f"{file_info['chars']}/{file_info['raw_chars']} chars loaded, "
-            f"~{file_info['estimated_tokens']} tokens, "
-            f"sections={file_info['sections_loaded']}"
+            f"  {file_info['file']} - {status}, "
+            f"reason={file_info['reason']}, "
+            f"allocated={file_info['allocated_context_tokens']}, "
+            f"used={file_info['estimated_used_tokens']}, "
+            f"trimmed={file_info['trimmed']}"
         )
 
     debug_log(
@@ -451,10 +511,12 @@ def print_prompt_debug(debug_info: dict) -> None:
         f"knowledge={debug_info['knowledge_chars']} chars "
         f"(~{debug_info['knowledge_estimated_tokens']} tokens), "
         f"user={debug_info['user_chars']} chars "
-        f"(~{debug_info['user_estimated_tokens']} tokens)"
+        f"(~{debug_info['user_estimated_tokens']} tokens), "
+        f"estimated_final={debug_info['estimated_final_prompt_tokens']} tokens"
     )
 
 def print_server_debug(server_debug: dict) -> None:
+    """Print llama.cpp response usage and timing metadata when available."""
     if not LLM_DEBUG:
         return
 
@@ -464,7 +526,7 @@ def print_server_debug(server_debug: dict) -> None:
 
     debug_log(
         "request settings: "
-        f"max_tokens={settings.get('max_tokens')}, "
+        f"response_tokens={server_debug.get('response_tokens')}, "
         f"temperature={settings.get('temperature')}"
     )
     debug_log(
@@ -497,8 +559,8 @@ def print_server_debug(server_debug: dict) -> None:
     else:
         debug_log("llama.cpp timings: not included in server response")
 
-# Makes the .wav file for the output to be heard
 def make_sam_wav(text: str, identity: dict) -> None:
+    """Render the model response to OUTPUT_WAV with the SAM binary."""
     voice_settings = identity.get("voice_settings", {})
 
     pitch = str(voice_settings.get("pitch", 95))
@@ -521,10 +583,13 @@ def make_sam_wav(text: str, identity: dict) -> None:
         text,
     ]
 
+    # External process call: failures here are usually missing SAM, bad voice
+    # settings, or text that the SAM binary cannot parse.
     subprocess.run(cmd, check=True)
 
-# Just a lil "spinning" animation so i can see if Artemis hung or not
+
 def thinking_spinner(stop_event: threading.Event) -> None:
+    """Show a small terminal spinner while the LLM request is running."""
     frames = ["—", "/", "|", "\\"]
 
     index = 0
@@ -543,6 +608,7 @@ def thinking_spinner(stop_event: threading.Event) -> None:
     
 
 def main() -> None:
+    """Run the interactive Artemis loop."""
     if not SAM_BINARY.exists():
         print(f"{RED}SAM binary not found at: {SAM_BINARY}{RESET}")
         return
@@ -599,7 +665,7 @@ def main() -> None:
         spinner_thread.start()
         try:
             llm_start = time.perf_counter()
-            robot_text, server_debug = ask_local_model(user_text, system_prompt)
+            robot_text, server_debug = ask_local_model(user_text, system_prompt, prompt_debug["response_tokens"])
             llm_elapsed = time.perf_counter() - llm_start
         finally:
             stop_event.set()
@@ -609,15 +675,13 @@ def main() -> None:
         print(f"{PURPLE}{identity.get('name', 'Artemis')}{RESET}: {robot_text}")
 
         sam_start = time.perf_counter()
-        #print("Generating SAM voice...") # Debugging statement
         make_sam_wav(robot_text, identity)
         sam_elapsed = time.perf_counter() - sam_start
 
         total_elapsed = time.perf_counter() - total_start
 
-        #print(f"Created WAV: {OUTPUT_WAV}") # Another debugging statement
-
-        # Debugging timing info so i can see what is taking the most amount of time to process
+        # Timing output identifies whether prompt building, LLM generation, or
+        # SAM rendering is the slowest part of the current turn.
         print(f"{CYAN}{BOLD}Timing:{RESET} prompt={format_elapsed(prompt_elapsed)}, llm={format_elapsed(llm_elapsed)}, sam={format_elapsed(sam_elapsed)}, total={format_elapsed(total_elapsed)}")
         print()
 
