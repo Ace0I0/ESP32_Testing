@@ -4,6 +4,7 @@ import threading
 import json
 import subprocess
 import urllib.request
+from datetime import datetime
 from pathlib import Path
 
 # The controller imports the router and budget helpers once, then calls them for
@@ -46,6 +47,8 @@ MEMORY_DIR = PROJECT_DIR / "memory"
 MODES_DIR = MEMORY_DIR / "modes"
 
 KNOWLEDGE_DIR = MEMORY_DIR / "knowledge"
+UNRECOGNIZED_INPUT_LOG = PROJECT_DIR / "unrecognized_inputs.txt"
+UNRECOGNIZED_REPLY = "Input not recognized. Please repeat with a clearer request."
 LLM_DEBUG = True
 KNOWLEDGE_CHAR_BUDGET = 12000
 MAX_SECTIONS_PER_FILE = 3
@@ -297,6 +300,18 @@ def format_elapsed(seconds: float) -> str:
         return f"{seconds * 1000:.0f} ms"
 
     return f"{seconds:.2f} sec"
+
+
+def log_unrecognized_input(user_text: str) -> None:
+    """Append unrecognized prompts for later router/debugging review."""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    single_line_text = " ".join(user_text.split())
+    log_line = f"{timestamp} | {single_line_text} | scores all zero for future debugging\n"
+    UNRECOGNIZED_INPUT_LOG.parent.mkdir(parents=True, exist_ok=True)
+
+    with UNRECOGNIZED_INPUT_LOG.open("a", encoding="utf-8") as log_file:
+        log_file.write(log_line)
+
 
 # System prompt builder -> Accumulates all needed info so Artemis can function correctly based on the mode chosen
 def build_system_prompt(identity: dict, mode: dict, user_text: str) -> tuple[str, dict]:
@@ -617,6 +632,21 @@ def main() -> None:
         
         print()
         print_prompt_debug(prompt_debug)
+
+        if prompt_debug.get("router", {}).get("unrecognized"):
+            log_unrecognized_input(user_text)
+            robot_text = UNRECOGNIZED_REPLY
+            print(f"{PURPLE}{identity.get('name', 'Artemis')}{RESET}: {robot_text}")
+
+            sam_start = time.perf_counter()
+            make_sam_wav(robot_text, identity)
+            sam_elapsed = time.perf_counter() - sam_start
+            total_elapsed = time.perf_counter() - total_start
+
+            # The LLM is skipped for all-zero router scores, so llm time is 0.
+            print(f"{CYAN}{BOLD}Timing:{RESET} prompt={format_elapsed(prompt_elapsed)}, llm={format_elapsed(0)}, sam={format_elapsed(sam_elapsed)}, total={format_elapsed(total_elapsed)}")
+            print()
+            continue
 
         stop_event = threading.Event()
 

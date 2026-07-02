@@ -908,6 +908,8 @@ def route_intent(user_text: str) -> dict[str, Any]:
 
     topics = detect_topics(normalized_text)
     topics = _filter_topics_for_intent(topics, top_intent)
+    all_intent_scores_zero = all(score == 0 for score in intent_scores.values())
+    unrecognized = all_intent_scores_zero and not topics
 
     selected_files = select_files(intent_scores, topics, normalized_text)
     selected_file_details = build_selected_file_details(selected_files, topics, intent_scores, confidence)
@@ -916,12 +918,17 @@ def route_intent(user_text: str) -> dict[str, Any]:
     for topic in topics:
         debug_reasons.append(f"topic detected: {topic}")
 
+    if unrecognized:
+        debug_reasons.append("input not recognized: all intent scores were zero and no topics were detected")
+
     return {
         "normalized_text": normalized_text,
         "intent": top_intent,
         "intent_scores": intent_scores,
         "confidence": confidence,
         "topics": topics,
+        "all_intent_scores_zero": all_intent_scores_zero,
+        "unrecognized": unrecognized,
         "selected_files": selected_files,
         "selected_file_details": selected_file_details,
         "debug_reasons": debug_reasons,
@@ -937,6 +944,7 @@ def print_router_debug(route: dict[str, Any]) -> None:
     intent = route.get("intent", "unknown")
     confidence = route.get("confidence", "low")
     topics = route.get("topics", [])
+    unrecognized = route.get("unrecognized", False)
     selected_files = route.get("selected_files", [])
     scores = route.get("intent_scores", {})
     reasons = route.get("debug_reasons", [])
@@ -944,6 +952,7 @@ def print_router_debug(route: dict[str, Any]) -> None:
     print(f"[Router] User text: {normalized_text}")
     print(f"[Router] Intent: {intent}")
     print(f"[Router] Confidence: {confidence}")
+    print(f"[Router] Unrecognized: {unrecognized}")
     print(
         "[Router] Scores: "
         + ", ".join(f"{name}={score}" for name, score in sorted(scores.items(), key=lambda item: (-item[1], item[0])))
