@@ -5,10 +5,9 @@ EAS GENERAL DATA
 ARTEMIS PUBLIC SIGNAL OFFICE
 
 EAS MODE LORE DATA FILE
-File name: eas_lore.txt
+File name: eas_general.txt
 Purpose: Local reference data for Artemis EAS Mode.
-Classification: Fictional narrative support data with selected public-health terminology references.
-Real-world status: The hazards and agencies in this file are fictional unless explicitly marked as public-health terminology.
+Classification: Narrative support data with selected public-health terminology references.
 
 ## Gemini Home Entertainment Overview
 Series name: Gemini Home Entertainment.

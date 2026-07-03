@@ -1,7 +1,7 @@
 EAS AGENCY AND OFFICE DATA
 ==========================
 
-## Fictional Organization Index
+## Organization Index
 Artemis Public Signal Office: fictional public-signal and advisory office used by Artemis EAS Mode.
 North Sector, Station 7: primary monitoring and relay station for simulated Artemis alerts.
 Low-Band Relay Office: fictional signal routing office associated with analog broadcast interruptions.
@@ -42,8 +42,8 @@ Associated hazards: Crawl signal affinity, Fake People voice repetition, Woodcra
 Acoustic description: low hum, broken three-note chime, reversed weather report, and a steady carrier tone beneath speech.
 Public reports: radios speak before power is connected, television snow forms a doorway shape, emergency tone plays at the wrong hour.
 
-## Fictional Reporting Channel Data
-Artemis Public Signal Office accepts fictional reports under the following categories:
+## Reporting Channel Data
+Artemis Public Signal Office accepts reports under the following categories:
 - unknown voice report
 - movement near tree line
 - duplicate person report
@@ -58,7 +58,7 @@ Artemis Public Signal Office accepts fictional reports under the following categ
 - repeated broadcast report
 - station tone report
 
-Fictional report fields:
+Report fields:
 - name or anonymous status
 - location
 - time observed

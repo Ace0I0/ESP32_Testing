@@ -6,960 +6,851 @@ from typing import Any
 from rapidfuzz import fuzz
 
 
-# Rule-based intent router for Artemis knowledge selection.
+# Rule-based intent/topic router for Artemis.
 #
-# Intent describes what the user wants to do.
-# Topics describe what the user is talking about.
-# The router keeps those two ideas separate so a topic word alone does not
-# automatically win file selection.
+# Intent answers: "What is the user trying to do?"
+# Topic answers: "What subject should Artemis look up?"
+# Intent is scored first and controls depth/behavior. Topic is scored second and
+# controls which memory/knowledge files support the answer.
 
+MAX_SELECTED_FILES = 4
+FUZZY_PHRASE_THRESHOLD = 88
+FUZZY_KEYWORD_THRESHOLD = 88
+FUZZY_TOPIC_THRESHOLD = 88
+
+# SET TO FALSE TO DISABLE DEBUG MODE
 DEBUG_ROUTER = True
-MAX_SELECTED_FILES = 3
 
-# Raspberry Pi terminal input usually already uses plain ASCII quotes, so this is
-# mostly a conservative fallback for pasted text or odd input sources.
-SMART_QUOTES_TRANSLATION = str.maketrans(
-    {
-        "‘": "'",
-        "’": "'",
-        "‚": "'",
-        "‛": "'",
-        "“": '"',
-        "”": '"',
-        "„": '"',
-        "‟": '"',
-    }
-)
+SEVERITY_PHRASES = {
+    "urgent": [
+        "i need help",
+        "help me",
+        "something is in my house",
+        "someone is in my house",
+        "someone is inside",
+        "there is someone inside",
+        "i think someone broke in",
+        "i hear something downstairs",
+        "something followed me",
+        "i am scared",
+        "i am in danger",
+    ],
+    "elevated": [
+        "i heard something",
+        "something is outside",
+        "i saw something",
+        "someone is watching",
+        "there is a noise",
+        "door is open",
+        "window is open",
+    ],
+}
 
-# Each intent entry defines a primary knowledge file, optional secondary files,
-# phrases, proximity rules, and weak keywords. Strong phrases and nearby-word
-# combinations should win over loose keyword matches.
-INTENTS: dict[str, dict[str, Any]] = {
-    "contact_report": {
-        "primary_file": "eas_contacts.txt",
-        "secondary_files": ["eas_agencies.txt"],
-        "secondary_triggers": ["agency", "authority", "department", "bureau", "official"],
-        "strong_phrases": [
-            "who do i contact",
-            "who should i contact",
-            "who do i call",
-            "who should i call",
-            "where do i report",
-            "how do i report",
-            "who do i notify",
-            "who should i notify",
-            "contact an agency",
-            "contact the agency",
-            "report this",
-            "report an incident",
-            "report the incident",
-            "emergency contact",
-            "nearest contact",
-            "who handles this",
-            "who is responsible for this",
-            "which agency do i contact",
-            "what number do i call",
+# INTENT_RULES is the main weighted rule table for deciding what the user is
+# trying to do.
+#
+# Format:
+# - The outer key is the intent name returned in route["primary_intent"].
+# - "phrases" maps exact phrase strings to score weights.
+# - "keywords" maps single-word triggers to score weights.
+# - "combos" lists pairs of nearby words plus a score weight:
+#   ("word_a", "word_b", score).
+# - "depth" tells the prompt builder how much answer/detail the intent usually
+#   needs.
+# - "needs_knowledge" tells the router whether this intent should load local
+#   memory/knowledge files.
+#
+# Score meaning:
+# - Higher scores mean stronger evidence for that intent.
+# - Strong phrases should usually have the highest weights because they show
+#   clear user intent, such as "who should i contact".
+# - Combos are middle-strength evidence because they catch flexible wording
+#   where two important words appear near each other.
+# - Keywords are weaker evidence because a single word can be ambiguous.
+#
+# Decision process:
+# - score_intents() adds every matching phrase, keyword, and combo score.
+# - The intent with the highest total becomes the primary intent.
+# - Nearby lower-scoring intents can become secondary intents if they are close
+#   enough to the winner.
+# - If every intent scores 0, the router treats the input as out_of_scope unless
+#   topic/severity logic adds a stronger route.
+#
+# RapidFuzz is used as a backup for phrase/keyword typos. Fuzzy matches add less
+# score than exact matches so a misspelling can help routing without overpowering
+# clearer exact rules.
+INTENT_RULES: dict[str, dict[str, Any]] = {
+    "identity_query": {
+        "phrases": {
+            "who are you": 12,
+            "what are you": 12,
+            "your name": 8,
+            "who is artemis": 10,
+        },
+        "keywords": {
+            "identity": 3,
+            "name": 2,
+        },
+        "combos": [
+            ("who", "you", 8),
         ],
-        "combo_rules": [
+        "depth": "none",
+        "needs_knowledge": False,
+    },
+    "mode_query": {
+        "phrases": {
+            "what mode are you in": 14,
+            "current mode": 8,
+            "which mode": 8,
+            "what is eas mode": 6,
+        },
+        "keywords": {
+            "mode": 4,
+        },
+        "combos": [
+            ("mode", "you", 6),
+        ],
+        "depth": "none",
+        "needs_knowledge": False,
+    },
+    "general_chat": {
+        "phrases": {
+            "hello": 6,
+            "hello artemis": 10,
+            "hi": 6,
+            "hey": 6,
+            "thank you": 6,
+            "thanks": 6,
+        },
+        "keywords": {
+            "hello": 4,
+            "hi": 4,
+            "hey": 4,
+            "thanks": 3,
+        },
+        "combos": [],
+        "depth": "none",
+        "needs_knowledge": False,
+    },
+    "current_status": {
+        "phrases": {
+            "anything to report": 14,
+            "anything reported": 14,
+            "any reports": 14,
+            "any updates": 14,
+            "current status": 12,
+            "latest report": 12,
+            "recent report": 12,
+            "recent activity": 12,
+            "anything happening": 12,
+            "what is happening": 12,
+            "status report": 10,
+        },
+        "keywords": {
+            "current": 3,
+            "currently": 3,
+            "active": 3,
+            "recent": 3,
+            "recently": 3,
+            "latest": 3,
+            "new": 2,
+            "today": 3,
+            "now": 3,
+            "lately": 3,
+            "status": 3,
+            "update": 3,
+            "updates": 3,
+            "alert": 2,
+            "alerts": 2,
+            "happening": 3,
+            "reported": 3,
+            "reports": 3,
+            "anything": 2,
+        },
+        "combos": [
+            ("anything", "report", 9),
+            ("any", "reports", 9),
+            ("report", "recently", 8),
+            ("updates", "today", 8),
+            ("anything", "happening", 8),
+        ],
+        "depth": "normal",
+        "needs_knowledge": True,
+    },
+    "contact_reporting": {
+        "phrases": {
+            "who should i contact": 16,
+            "who do i contact": 16,
+            "how do i report": 16,
+            "where do i report": 16,
+            "report this": 12,
+            "what number do i call": 14,
+            "what office": 10,
+            "who should i call": 12,
+            "who do i call": 12,
+        },
+        "keywords": {
+            "contact": 4,
+            "phone": 3,
+            "email": 3,
+            "address": 3,
+            "office": 4,
+            "agency": 3,
+            "call": 3,
+            "notify": 3,
+        },
+        "combos": [
             ("who", "contact", 12),
-            ("who", "call", 12),
-            ("who", "notify", 12),
-            ("where", "report", 11),
-            ("how", "report", 11),
-            ("contact", "agency", 10),
-            ("report", "incident", 10),
-            ("call", "hotline", 10),
-            ("number", "call", 8),
+            ("how", "report", 12),
+            ("where", "report", 12),
+            ("number", "call", 10),
+            ("report", "this", 8),
         ],
-        "keywords": [
-            "contact",
-            "call",
-            "notify",
-            "hotline",
-            "phone",
-            "number",
-            "agency",
-            "authority",
-            "responsible",
-            "dispatcher",
-            "dispatch",
-        ],
+        "depth": "normal",
+        "needs_knowledge": True,
     },
-    "disease_info": {
-        "primary_file": "eas_diseases.txt",
-        "secondary_files": [],
-        "secondary_triggers": [],
-        "strong_phrases": [
-            "what is this disease",
-            "what is the disease",
-            "what are the symptoms",
-            "what symptoms does it cause",
-            "how does it spread",
-            "how is it spread",
-            "is it contagious",
-            "is it infectious",
-            "how is it treated",
-            "what causes this disease",
-            "what is the infection",
-            "how dangerous is the disease",
-            "what should i do if infected",
-            "how do i know if i am infected",
+    "explanation": {
+        "phrases": {
+            "what is": 8,
+            "what are": 8,
+            "tell me about": 12,
+            "explain": 10,
+            "what does this mean": 12,
+            "what does": 7,
+        },
+        "keywords": {
+            "explain": 5,
+            "meaning": 4,
+            "describe": 4,
+            "about": 2,
+        },
+        "combos": [
+            ("what", "disease", 8),
+            ("what", "creature", 8),
+            ("tell", "about", 8),
         ],
-        "combo_rules": [
-            ("disease", "symptoms", 12),
-            ("virus", "symptoms", 12),
-            ("infection", "symptoms", 12),
-            ("disease", "spread", 12),
-            ("virus", "spread", 12),
-            ("infection", "spread", 12),
-            ("how", "spread", 10),
-            ("is", "contagious", 10),
-            ("what", "symptoms", 10),
-            ("infected", "do", 9),
-            ("quarantine", "disease", 10),
-        ],
-        "keywords": [
-            "disease",
-            "virus",
-            "infection",
-            "infected",
-            "symptom",
-            "symptoms",
-            "spread",
-            "contagious",
-            "infectious",
-            "treatment",
-            "treated",
-            "pathogen",
-            "quarantine",
-            "contamination",
-        ],
+        "depth": "normal",
+        "needs_knowledge": True,
     },
-    "creature_info": {
-        "primary_file": "eas_creatures.txt",
-        "secondary_files": [],
-        "secondary_triggers": [],
-        "strong_phrases": [
-            "what is this creature",
-            "what is this organism",
-            "what creature is this",
-            "how do i identify it",
-            "how do i identify this creature",
-            "what does it look like",
-            "is it dangerous",
-            "how dangerous is it",
-            "how do i survive it",
-            "what is a mimic",
-            "what is the mimic",
-            "what is vita carnis",
-            "what is nature's mockery",
-            "how do i avoid it",
-            "what should i do if i see it",
+    "safety_instruction": {
+        "phrases": {
+            "what should i do": 16,
+            "what do i do": 14,
+            "how do i stay safe": 14,
+            "should i evacuate": 12,
+            "should i shelter": 12,
+            "is it safe": 10,
+            "safety instructions": 10,
+            "i need help": 18,
+            "help me": 18,
+            "i am in danger": 20,
+            "i am scared": 16,
+            "something is in my house": 22,
+            "someone is in my house": 22,
+            "someone is inside": 20,
+            "i think someone broke in": 22,
+        },
+        "keywords": {
+            "safe": 3,
+            "safety": 4,
+            "protocol": 3,
+            "instructions": 4,
+            "evacuate": 4,
+            "shelter": 4,
+            "symptoms": 2,
+            "symptom": 2,
+            "danger": 5,
+            "scared": 4,
+            "inside": 3,
+            "downstairs": 4,
+            "followed": 4,
+        },
+        "combos": [
+            ("should", "do", 12),
+            ("what", "do", 10),
+            ("has", "symptoms", 9),
+            ("someone", "symptoms", 9),
+            ("stay", "safe", 10),
+            ("someone", "inside", 14),
+            ("something", "house", 14),
+            ("someone", "house", 14),
+            ("door", "open", 8),
+            ("window", "open", 8),
         ],
-        "combo_rules": [
-            ("what", "creature", 12),
-            ("what", "organism", 12),
-            ("identify", "creature", 11),
-            ("identify", "organism", 11),
-            ("dangerous", "creature", 10),
-            ("survive", "creature", 10),
-            ("avoid", "creature", 10),
-            ("what", "mimic", 12),
-            ("what", "vita", 10),
-            ("nature", "mockery", 10),
-        ],
-        "keywords": [
-            "creature",
-            "organism",
-            "entity",
-            "mimic",
-            "mimik",
-            "vita carnis",
-            "carnis",
-            "nature's mockery",
-            "natures mockery",
-            "dangerous",
-            "identify",
-            "identification",
-            "survive",
-            "avoid",
-            "specimen",
-        ],
+        "depth": "deep",
+        "needs_knowledge": True,
     },
-    "agency_info": {
-        "primary_file": "eas_agencies.txt",
-        "secondary_files": ["eas_contacts.txt"],
-        "secondary_triggers": ["contact", "report", "call", "notify"],
-        "strong_phrases": [
-            "what agency is this",
-            "what does the agency do",
-            "which agency handles this",
-            "which department handles this",
-            "who has authority",
-            "who is in charge",
-            "what organization is responsible",
-            "what is this agency",
-            "who issued the warning",
-            "who sent the broadcast",
+    "location_query": {
+        "phrases": {
+            "where is": 14,
+            "where are": 12,
+            "what area": 10,
+            "which area": 10,
+            "what zone": 10,
+            "which zone": 10,
+        },
+        "keywords": {
+            "where": 5,
+            "location": 4,
+            "located": 4,
+            "area": 3,
+            "zone": 3,
+            "station": 4,
+            "sector": 3,
+            "coordinates": 4,
+        },
+        "combos": [
+            ("where", "station", 10),
+            ("where", "location", 10),
         ],
-        "combo_rules": [
-            ("which", "agency", 12),
-            ("what", "agency", 12),
-            ("agency", "handles", 11),
-            ("department", "handles", 11),
-            ("who", "authority", 10),
-            ("who", "issued", 10),
-            ("who", "broadcast", 10),
-        ],
-        "keywords": [
-            "agency",
-            "department",
-            "organization",
-            "authority",
-            "official",
-            "government",
-            "division",
-            "bureau",
-            "issued",
-            "warning",
-            "broadcast",
-        ],
+        "depth": "normal",
+        "needs_knowledge": True,
     },
-    "location_info": {
-        "primary_file": "eas_locations.txt",
-        "secondary_files": [],
-        "secondary_triggers": [],
-        "strong_phrases": [
-            "where is this happening",
-            "where did this happen",
-            "what area is affected",
-            "which area is affected",
-            "what zone is affected",
-            "where is the location",
-            "where was it seen",
-            "where was it last seen",
-            "what site is this",
-            "where should i evacuate",
-            "which region is affected",
-        ],
-        "combo_rules": [
-            ("where", "happening", 12),
-            ("where", "seen", 12),
-            ("where", "location", 12),
-            ("area", "affected", 11),
-            ("zone", "affected", 11),
-            ("region", "affected", 11),
-            ("where", "evacuate", 10),
-            ("evacuation", "area", 10),
-        ],
-        "keywords": [
-            "where",
-            "location",
-            "area",
-            "zone",
-            "site",
-            "facility",
-            "region",
-            "evacuation",
-            "evacuate",
-            "sector",
-            "district",
-            "coordinates",
-            "seen",
-        ],
-    },
-    "current_activity_status": {
-        "primary_file": "eas_current_activity.txt",
-        "secondary_files": ["eas_general.txt"],
-        "secondary_triggers": ["general", "broadcast", "alert", "warning", "status"],
-        "strong_phrases": [
-            "what is happening",
-            "what is happening now",
-            "what is going on",
-            "what is the current alert",
-            "what is the current warning",
-            "what is the current status",
-            "what is the situation",
-            "what is the latest update",
-            "any current activity",
-            "what changed",
-            "status report",
-            "give me a status report",
-            "current emergency",
-            "active emergency",
-        ],
-        "combo_rules": [
-            ("current", "alert", 12),
-            ("current", "warning", 12),
-            ("current", "status", 12),
-            ("latest", "update", 10),
-            ("what", "happening", 12),
-            ("status", "report", 11),
-            ("active", "emergency", 10),
-        ],
-        "keywords": [
-            "current",
-            "status",
-            "activity",
-            "active",
-            "latest",
-            "update",
-            "warning",
-            "alert",
-            "situation",
-            "emergency",
-            "happening",
-            "now",
-        ],
-    },
-    "safety_protocol": {
-        "primary_file": "eas_general.txt",
-        "secondary_files": ["eas_contacts.txt", "eas_locations.txt"],
-        "secondary_triggers": ["contact", "call", "notify", "where", "location", "evacuate", "shelter"],
-        "strong_phrases": [
-            "what should i do",
-            "what do i do",
-            "how do i stay safe",
-            "how can i stay safe",
-            "should i evacuate",
-            "should i shelter",
-            "where should i go",
-            "is it safe",
-            "is this safe",
-            "what is the protocol",
-            "what are the instructions",
-            "emergency instructions",
-            "safety instructions",
-        ],
-        "combo_rules": [
-            ("what", "do", 12),
-            ("stay", "safe", 11),
-            ("should", "evacuate", 11),
-            ("should", "shelter", 11),
-            ("is", "safe", 10),
-            ("safety", "instructions", 10),
-            ("emergency", "instructions", 10),
-            ("what", "protocol", 10),
-        ],
-        "keywords": [
-            "safe",
-            "safety",
-            "protocol",
-            "instructions",
-            "evacuate",
-            "evacuation",
-            "shelter",
-            "avoid",
-            "danger",
-            "warning",
-            "emergency",
-            "secure",
-            "lockdown",
-        ],
-    },
-    "general_eas_info": {
-        "primary_file": "eas_general.txt",
-        "secondary_files": [],
-        "secondary_triggers": [],
-        "strong_phrases": [
-            "what does this mean",
-            "explain the alert",
-            "explain this warning",
-            "what is eas mode",
-            "what is this broadcast",
-            "what does the warning mean",
-            "what does the alert mean",
-            "give me general information",
-        ],
-        "combo_rules": [
-            ("explain", "alert", 12),
-            ("explain", "warning", 12),
-            ("what", "mean", 11),
-            ("what", "broadcast", 11),
-            ("general", "information", 10),
-        ],
-        "keywords": [
-            "explain",
-            "meaning",
-            "general",
-            "broadcast",
-            "alert",
-            "warning",
-            "eas",
-            "information",
-            "info",
-        ],
+    "out_of_scope": {
+        "phrases": {},
+        "keywords": {},
+        "combos": [],
+        "depth": "none",
+        "needs_knowledge": False,
     },
 }
 
-# Topic detection is separate from intent routing.
-# Topics only describe the subject being discussed, and they should not
-# override a different intent unless the scoring rules also support it.
-TOPICS: dict[str, list[str]] = {
-    "disease": [
-        "disease",
-        "virus",
-        "infection",
-        "infected",
-        "pathogen",
-        "deep root",
-        "deep root virus",
-        "deep root disease",
-        "desease",
-    ],
-    "creature": [
-        "creature",
-        "organism",
-        "entity",
-        "mimic",
-        "mimik",
-        "vita carnis",
-        "carnis",
-        "nature's mockery",
-        "natures mockery",
-    ],
-    "agency": [
-        "agency",
-        "department",
-        "organization",
-        "authority",
-        "bureau",
-        "government",
-    ],
-    "location": [
-        "location",
-        "where",
-        "area",
-        "zone",
-        "site",
-        "facility",
-        "region",
-        "sector",
-        "district",
-        "evacuation",
-        "evacuate",
-        "coordinates",
-    ],
-    "contact": [
-        "contact",
-        "contakt",
-        "hotline",
-        "phone",
-        "number",
-        "call",
-        "notify",
-    ],
-    "current_activity": [
-        "current",
-        "status",
-        "latest",
-        "active",
-        "happening now",
-        "what is happening",
-        "now",
-        "alert",
-        "warning",
-    ],
+
+TOPIC_RULES: dict[str, dict[str, int]] = {
+    "safety": {
+        "safety": 5,
+        "safe": 4,
+        "protocol": 4,
+        "urgent": 5,
+        "help": 4,
+        "danger": 5,
+        "scared": 4,
+        "house": 3,
+        "inside": 4,
+        "downstairs": 4,
+        "outside": 3,
+        "watching": 4,
+        "noise": 3,
+        "door is open": 5,
+        "window is open": 5,
+        "someone is inside": 7,
+        "something is in my house": 8,
+        "someone is in my house": 8,
+    },
+    "disease": {
+        "disease": 5,
+        "diseases": 5,
+        "virus": 5,
+        "infection": 5,
+        "infected": 4,
+        "symptom": 5,
+        "symptoms": 5,
+        "outbreak": 4,
+        "medical": 4,
+        "contagion": 4,
+        "deep root": 8,
+        "nature's mockery": 5,
+    },
+    "creature": {
+        "creature": 5,
+        "creatures": 5,
+        "entity": 5,
+        "entities": 5,
+        "monster": 4,
+        "mimic": 6,
+        "mimics": 6,
+        "woodcrawler": 6,
+        "vita carnis": 8,
+        "gemini": 5,
+        "fake people": 6,
+        "wretch": 5,
+    },
+    "agency": {
+        "agency": 5,
+        "agencies": 5,
+        "department": 4,
+        "office": 4,
+        "authority": 4,
+        "bureau": 4,
+        "official": 3,
+    },
+    "location": {
+        "where": 4,
+        "location": 5,
+        "located": 5,
+        "area": 4,
+        "zone": 4,
+        "station": 5,
+        "sector": 4,
+        "coordinates": 5,
+        "facility": 4,
+    },
+    "contact": {
+        "contact": 5,
+        "phone": 5,
+        "email": 5,
+        "address": 5,
+        "call": 4,
+        "number": 4,
+        "notify": 4,
+        "report this": 4,
+    },
+    "current_activity": {
+        "current": 4,
+        "currently": 4,
+        "recent": 4,
+        "recently": 4,
+        "latest": 4,
+        "today": 4,
+        "now": 4,
+        "lately": 4,
+        "status": 4,
+        "update": 4,
+        "updates": 4,
+        "reported": 4,
+        "reports": 4,
+        "anything to report": 6,
+        "anything reported": 6,
+        "any reports": 6,
+        "any updates": 6,
+    },
+    "general": {
+        "hello": 3,
+        "hi": 3,
+        "hey": 3,
+        "artemis": 2,
+        "general": 3,
+        "eas": 3,
+    },
 }
 
-TOPIC_MATCH_THRESHOLD = 90
-TOPIC_BACKUP_THRESHOLD = 92
-
-# File metadata stays separate from scoring so the router can keep returning the
-# older filename list while also exposing richer details for the budget manager.
-FILE_TO_INTENT = {
-    config["primary_file"]: intent_name for intent_name, config in INTENTS.items()
-}
 
 TOPIC_TO_FILE = {
+    "safety": "eas_safety_protocols.txt",
     "disease": "eas_diseases.txt",
     "creature": "eas_creatures.txt",
     "agency": "eas_agencies.txt",
     "location": "eas_locations.txt",
     "contact": "eas_contacts.txt",
     "current_activity": "eas_current_activity.txt",
+    "general": "eas_general.txt",
 }
 
 
-def remove_consecutive_duplicate_words(text: str) -> str:
-    """Collapse only consecutive duplicate words while preserving word order."""
-    words = text.split()
-    cleaned: list[str] = []
-
-    for word in words:
-        if not cleaned or cleaned[-1] != word:
-            cleaned.append(word)
-
-    return " ".join(cleaned)
+INTENT_PRIMARY_FILES = {
+    "current_status": ["eas_current_activity.txt"],
+    "contact_reporting": ["eas_contacts.txt", "eas_agencies.txt"],
+    "safety_instruction": ["eas_safety_protocols.txt"],
+    "location_query": ["eas_locations.txt"],
+}
 
 
-def normalize_user_text(user_text: str) -> str:
-    """Normalize user text safely without changing word order.
+def normalize_text(text: str) -> str:
+    """Normalize user input for repeatable rule matching."""
+    normalized = text.lower().strip()
+    normalized = normalized.replace("_", " ")
+    normalized = re.sub(r"[\u0000-\u001f\u007f-\u009f]", " ", normalized)
+    normalized = re.sub(r"[^a-z0-9\s']", " ", normalized)
+    normalized = re.sub(r"\s+", " ", normalized)
+    return normalized.strip()
 
-    The smart-quote translation is kept as a fallback, but terminal input on the
-    Raspberry Pi will usually already arrive as plain quotes.
-    """
-    text = user_text.translate(SMART_QUOTES_TRANSLATION)
-    text = text.lower().strip()
-    text = text.replace("_", " ")
-    text = re.sub(r"[\u0000-\u001f\u007f-\u009f]", " ", text)
-    text = re.sub(r"[^\w\s']", " ", text)
-    text = re.sub(r"\s+", " ", text)
-    text = remove_consecutive_duplicate_words(text)
-    return text.strip()
+def tokenize_text(text: str) -> set[str]:
+    """Return normalized word tokens for keyword scoring."""
+    return set(normalize_text(text).split())
 
 
-def _comparison_text(normalized_text: str) -> str:
-    """Build a punctuation-light comparison string for fuzzy topic checks."""
-    text = normalized_text.replace("'", "")
-    text = re.sub(r"[^a-z0-9\s]", " ", text)
-    return re.sub(r"\s+", " ", text).strip()
-
-
-def _tokenize(text: str) -> list[str]:
-    """Split text into ordered word tokens."""
-    return [token for token in text.split() if token]
-
-
-def _phrase_positions(tokens: list[str], phrase_tokens: list[str]) -> list[int]:
-    """Return every exact starting position for a phrase token sequence."""
-    if not tokens or not phrase_tokens or len(phrase_tokens) > len(tokens):
-        return []
-
-    positions: list[int] = []
-    phrase_length = len(phrase_tokens)
-
-    for index in range(len(tokens) - phrase_length + 1):
-        if tokens[index : index + phrase_length] == phrase_tokens:
-            positions.append(index)
-
-    return positions
-
-
-def words_near(text: str, word_a: str, word_b: str, max_words_between: int = 4) -> bool:
-    """Check whether two words or phrases appear within a small window."""
-    tokens = _tokenize(text)
-    left_tokens = _tokenize(word_a)
-    right_tokens = _tokenize(word_b)
-
-    left_positions = _phrase_positions(tokens, left_tokens)
-    right_positions = _phrase_positions(tokens, right_tokens)
-
-    if not left_positions or not right_positions:
+def _contains_term(normalized_text: str, term: str) -> bool:
+    normalized_term = normalize_text(term)
+    if not normalized_term:
         return False
 
-    left_length = len(left_tokens)
-    right_length = len(right_tokens)
+    if " " in normalized_term or "'" in normalized_term:
+        return normalized_term in normalized_text
 
-    for left_start in left_positions:
-        left_end = left_start + left_length - 1
-        for right_start in right_positions:
-            right_end = right_start + right_length - 1
-            gap_forward = right_start - left_end - 1
-            gap_reverse = left_start - right_end - 1
-            if 0 <= gap_forward <= max_words_between or 0 <= gap_reverse <= max_words_between:
-                return True
-
-    return False
+    return re.search(rf"\b{re.escape(normalized_term)}\b", normalized_text) is not None
 
 
-def _contains_exact_term(text: str, term: str) -> bool:
-    """Match a whole word or exact phrase without relying on fuzzy scoring."""
-    if " " in term or "'" in term:
-        return term in text
+def _words_near(normalized_text: str, word_a: str, word_b: str, max_gap: int = 5) -> bool:
+    tokens = normalized_text.split()
+    positions_a = [index for index, token in enumerate(tokens) if token == word_a]
+    positions_b = [index for index, token in enumerate(tokens) if token == word_b]
 
-    pattern = rf"\b{re.escape(term)}\b"
-    return re.search(pattern, text) is not None
-
-
-def _score_phrase(phrase: str, normalized_text: str) -> tuple[int, str | None]:
-    """Score a strong intent phrase using exact and fuzzy phrase matching."""
-    if _contains_exact_term(normalized_text, phrase):
-        return 14, f"exact phrase matched: {phrase}"
-
-    # Strong phrases are the highest-value signals. Exact hits should dominate,
-    # while fuzzy phrase matches provide a smaller but still meaningful boost.
-    partial_score = fuzz.partial_ratio(phrase, normalized_text)
-    if partial_score >= 90:
-        return 10, f"strong fuzzy phrase matched: {phrase} ({partial_score})"
-    if partial_score >= 84:
-        return 6, f"fuzzy phrase matched: {phrase} ({partial_score})"
-
-    return 0, None
+    return any(abs(left - right) <= max_gap for left in positions_a for right in positions_b)
 
 
-def _score_keyword(keyword: str, normalized_text: str) -> tuple[int, str | None]:
-    """Score a weak keyword signal when no stronger phrase match is present."""
-    if _contains_exact_term(normalized_text, keyword):
-        return 2, f"keyword matched: {keyword}"
-
-    # Keyword fuzzing is intentionally weaker than phrase scoring so that
-    # generic words like disease, alert, or contact do not dominate intent.
-    if len(keyword) < 4:
-        return 0, None
-
-    partial_score = fuzz.partial_ratio(keyword, normalized_text)
-    if partial_score >= 92:
-        return 1, f"fuzzy keyword matched: {keyword} ({partial_score})"
-
-    return 0, None
+def _similarity(left: str, right: str) -> int:
+    """Return a 0-100 similarity score using rapidfuzz."""
+    return int(fuzz.ratio(left, right))
 
 
-def _score_combo(normalized_text: str, word_a: str, word_b: str, score: int) -> tuple[int, str | None]:
-    """Score a proximity rule when two terms appear near each other."""
-    if words_near(normalized_text, word_a, word_b):
-        return score, f"combo matched: {word_a} near {word_b}"
-    return 0, None
+def _partial_similarity(needle: str, haystack: str) -> int:
+    """Return a partial phrase score using rapidfuzz."""
+    if not needle or not haystack:
+        return 0
+
+    return int(fuzz.partial_ratio(needle, haystack))
 
 
-def score_intents(normalized_text: str) -> tuple[dict[str, int], list[str]]:
-    """Score every intent using phrases, proximity, and keyword fallbacks."""
-    scores: dict[str, int] = {intent: 0 for intent in INTENTS}
-    reasons: list[str] = []
+def _best_token_similarity(term: str, tokens: set[str]) -> int:
+    """Compare one keyword against all input tokens and return the best score."""
+    if not term or not tokens:
+        return 0
 
-    for intent_name, config in INTENTS.items():
-        intent_score = 0
-
-        for phrase in config["strong_phrases"]:
-            score, reason = _score_phrase(phrase, normalized_text)
-            if score:
-                intent_score += score
-                reasons.append(f"{reason} for {intent_name}")
-
-        for word_a, word_b, combo_score in config["combo_rules"]:
-            score, reason = _score_combo(normalized_text, word_a, word_b, combo_score)
-            if score:
-                intent_score += score
-                reasons.append(f"{reason} for {intent_name}")
-
-        for keyword in config["keywords"]:
-            score, reason = _score_keyword(keyword, normalized_text)
-            if score:
-                intent_score += score
-                reasons.append(f"{reason} for {intent_name}")
-
-        scores[intent_name] = intent_score
-
-    return scores, reasons
+    return max(_similarity(term, token) for token in tokens)
 
 
-def classify_confidence(scores: dict[str, int]) -> str:
-    """Convert raw intent scores into a simple confidence tier."""
-    ranked = sorted(scores.items(), key=lambda item: (-item[1], item[0]))
-    if not ranked:
-        return "low"
+def _score_rule_set(user_text: str, rules: dict[str, Any]) -> int:
+    normalized = normalize_text(user_text)
+    tokens = tokenize_text(normalized)
+    score = 0
 
-    top_score = ranked[0][1]
-    second_score = ranked[1][1] if len(ranked) > 1 else 0
+    for phrase, weight in rules.get("phrases", {}).items():
+        if _contains_term(normalized, phrase):
+            score += int(weight)
+            continue
 
-    if top_score >= 12 and top_score - second_score >= 6:
-        return "high"
-    if top_score >= 8 and top_score - second_score >= 3:
-        return "medium"
-    return "low"
+        fuzzy_score = _partial_similarity(normalize_text(phrase), normalized)
+        if fuzzy_score >= FUZZY_PHRASE_THRESHOLD:
+            # Fuzzy phrase matches are intentionally weaker than exact phrase
+            # matches. They catch typos without letting near misses dominate.
+            score += max(2, min(6, int(weight) // 2))
+
+    for keyword, weight in rules.get("keywords", {}).items():
+        if keyword in tokens:
+            score += int(weight)
+            continue
+
+        if _best_token_similarity(normalize_text(keyword), tokens) >= FUZZY_KEYWORD_THRESHOLD:
+            score += max(1, min(2, int(weight) // 2))
+
+    for word_a, word_b, weight in rules.get("combos", []):
+        if _words_near(normalized, word_a, word_b):
+            score += int(weight)
+
+    return score
 
 
-def _sorted_intents(scores: dict[str, int]) -> list[tuple[str, int]]:
-    """Sort intents from highest score to lowest score."""
+def score_intents(user_text: str) -> dict[str, int]:
+    """Score each intent with exact phrases, keywords, and proximity combos."""
+    return {
+        intent_name: _score_rule_set(user_text, rules)
+        for intent_name, rules in INTENT_RULES.items()
+    }
+
+
+def score_topics(user_text: str) -> dict[str, int]:
+    """Score each topic independently from intent."""
+    normalized = normalize_text(user_text)
+    tokens = tokenize_text(normalized)
+    scores: dict[str, int] = {}
+
+    for topic_name, weighted_terms in TOPIC_RULES.items():
+        topic_score = 0
+        for term, weight in weighted_terms.items():
+            normalized_term = normalize_text(term)
+            if " " in normalized_term or "'" in normalized_term:
+                if normalized_term in normalized:
+                    topic_score += weight
+                elif _partial_similarity(normalized_term, normalized) >= FUZZY_TOPIC_THRESHOLD:
+                    topic_score += max(1, min(3, weight // 2))
+            elif normalized_term in tokens:
+                topic_score += weight
+            elif (
+                not (topic_name == "current_activity" and normalized_term in {"reports", "reported"})
+                and _best_token_similarity(normalized_term, tokens) >= FUZZY_TOPIC_THRESHOLD
+            ):
+                topic_score += max(1, min(3, weight // 2))
+
+        scores[topic_name] = topic_score
+
+    # "report" by itself is ambiguous. Only treat it as current activity when it
+    # appears in a status-style shape such as "anything ... report".
+    if _words_near(normalized, "anything", "report") or _contains_term(normalized, "any reports"):
+        scores["current_activity"] += 5
+
+    return scores
+
+
+def score_severity(user_text: str) -> dict[str, int]:
+    """Score urgent/elevated safety language separately from normal topics."""
+    normalized = normalize_text(user_text)
+    scores = {severity: 0 for severity in SEVERITY_PHRASES}
+
+    for severity, phrases in SEVERITY_PHRASES.items():
+        for phrase in phrases:
+            normalized_phrase = normalize_text(phrase)
+            if _contains_term(normalized, normalized_phrase):
+                scores[severity] += 10 if severity == "urgent" else 6
+                continue
+
+            if _partial_similarity(normalized_phrase, normalized) >= FUZZY_PHRASE_THRESHOLD:
+                scores[severity] += 5 if severity == "urgent" else 3
+
+    return scores
+
+
+def _severity_level(severity_scores: dict[str, int]) -> str:
+    if severity_scores.get("urgent", 0) > 0:
+        return "urgent"
+    if severity_scores.get("elevated", 0) > 0:
+        return "elevated"
+    return "none"
+
+
+def _rank_scores(scores: dict[str, int]) -> list[tuple[str, int]]:
     return sorted(scores.items(), key=lambda item: (-item[1], item[0]))
 
 
-def _should_load_secondary_files(
-    intent_name: str,
-    normalized_text: str,
-    topics: list[str],
-    intent_scores: dict[str, int],
-    second_intent: str | None,
-    second_score: int,
-) -> bool:
-    """Decide whether a winning intent needs any extra supporting files."""
-    config = INTENTS[intent_name]
-    if not config["secondary_files"]:
-        return False
+def _choose_primary_intent(intent_scores: dict[str, int]) -> str:
+    ranked = _rank_scores(intent_scores)
+    if not ranked or ranked[0][1] <= 0:
+        return "out_of_scope"
 
-    secondary_triggers = config.get("secondary_triggers", [])
-
-    def has_trigger() -> bool:
-        for trigger in secondary_triggers:
-            if _contains_exact_term(normalized_text, trigger):
-                return True
-
-            if len(trigger) >= 4 and fuzz.partial_ratio(trigger, normalized_text) >= 92:
-                return True
-
-        return False
-
-    if intent_name == "contact_report":
-        return "agency" in topics or has_trigger()
-
-    if intent_name == "agency_info":
-        return "contact" in topics or has_trigger()
-
-    if intent_name == "safety_protocol":
-        return "contact" in topics or "location" in topics or has_trigger()
-
-    if intent_name == "current_activity_status":
-        return has_trigger()
-
-    return False
+    return ranked[0][0]
 
 
-def select_files(
-    intent_scores: dict[str, int],
-    topics: list[str],
-    normalized_text: str | None = None,
-) -> list[str]:
-    """Pick the smallest safe set of knowledge files for the routed intent."""
-    ranked = _sorted_intents(intent_scores)
-    if not ranked:
-        return ["eas_general.txt"]
+def _choose_secondary_intents(intent_scores: dict[str, int], primary_intent: str) -> list[str]:
+    primary_score = intent_scores.get(primary_intent, 0)
+    secondary: list[str] = []
 
-    top_intent, top_score = ranked[0]
-    second_intent, second_score = ranked[1] if len(ranked) > 1 else (None, 0)
-    confidence = classify_confidence(intent_scores)
-    selected_files: list[str] = []
+    for intent_name, score in _rank_scores(intent_scores):
+        if intent_name in {primary_intent, "out_of_scope"}:
+            continue
+        if score >= 6 and primary_score - score <= 8:
+            secondary.append(intent_name)
 
-    def add_file(filename: str) -> None:
-        if filename not in selected_files:
-            selected_files.append(filename)
-
-    if confidence == "low":
-        add_file("eas_general.txt")
-        primary_file = INTENTS[top_intent]["primary_file"]
-        if top_score > 0 and primary_file != "eas_general.txt":
-            add_file(primary_file)
-        return selected_files[:MAX_SELECTED_FILES]
-
-    primary_file = INTENTS[top_intent]["primary_file"]
-    add_file(primary_file)
-
-    if confidence == "high":
-        if normalized_text is None:
-            normalized_text = ""
-
-        if _should_load_secondary_files(
-            top_intent,
-            normalized_text,
-            topics,
-            intent_scores,
-            second_intent,
-            second_score,
-        ):
-            for filename in INTENTS[top_intent]["secondary_files"]:
-                add_file(filename)
-
-    elif confidence == "medium" and second_intent and second_score >= 4:
-        add_file(INTENTS[second_intent]["primary_file"])
-
-    return selected_files[:MAX_SELECTED_FILES]
+    return secondary[:2]
 
 
-def _detect_topic(normalized_text: str, topic_name: str, aliases: list[str]) -> tuple[bool, str | None]:
-    """Check whether a topic alias appears exactly or fuzzily in the input."""
-    comparison_text = _comparison_text(normalized_text)
+def _choose_topics(topic_scores: dict[str, int], primary_intent: str) -> list[str]:
+    topics = [topic for topic, score in _rank_scores(topic_scores) if score > 0]
 
-    for alias in aliases:
-        alias_normalized = normalize_user_text(alias)
-        alias_comparison = _comparison_text(alias_normalized)
-
-        if _contains_exact_term(normalized_text, alias_normalized):
-            return True, f"topic detected: {topic_name} ({alias_normalized})"
-
-        if alias_comparison and alias_comparison in comparison_text:
-            return True, f"topic detected: {topic_name} ({alias_comparison})"
-
-        partial_score = fuzz.partial_ratio(alias_comparison or alias_normalized, comparison_text)
-        if partial_score >= TOPIC_MATCH_THRESHOLD:
-            return True, f"topic detected: {topic_name} ({alias_normalized}, {partial_score})"
-
-        backup_score = fuzz.token_set_ratio(alias_comparison or alias_normalized, comparison_text)
-        if backup_score >= TOPIC_BACKUP_THRESHOLD:
-            return True, f"topic detected: {topic_name} ({alias_normalized}, backup {backup_score})"
-
-    return False, None
-
-
-def detect_topics(normalized_text: str) -> list[str]:
-    """Detect subject matter labels without deciding the final intent."""
-    topics: list[str] = []
-
-    for topic_name, aliases in TOPICS.items():
-        matched, _ = _detect_topic(normalized_text, topic_name, aliases)
-        if matched:
-            topics.append(topic_name)
+    if not topics and primary_intent in {"identity_query", "mode_query", "general_chat"}:
+        topics = ["general"]
 
     return topics
 
 
-def _filter_topics_for_intent(topics: list[str], intent: str) -> list[str]:
-    """Drop redundant topic labels that are already implied by the intent."""
-    if intent in {"contact_report", "agency_info"} and "contact" in topics:
-        filtered = [topic for topic in topics if topic != "contact"]
-        if filtered:
-            return filtered
-
-    return topics
+def _confidence(intent_scores: dict[str, int], topic_scores: dict[str, int]) -> int:
+    top_intent = max(intent_scores.values(), default=0)
+    top_topic = max(topic_scores.values(), default=0)
+    return min(100, (top_intent * 5) + (top_topic * 3))
 
 
-def _add_file_detail(
-    details: list[dict[str, Any]],
-    seen_files: set[str],
-    file_name: str,
-    reason: str,
-    intent_name: str,
-    intent_scores: dict[str, int],
-) -> None:
-    """Append one routed file detail unless that file was already selected."""
-    if not file_name or file_name in seen_files:
-        return
-
-    details.append(
-        {
-            "file": file_name,
-            "reason": reason,
-            "intent": intent_name,
-            "intent_score": intent_scores.get(intent_name, 0),
-        }
-    )
-    seen_files.add(file_name)
+def _depth_for_route(primary_intent: str, topics: list[str]) -> str:
+    if primary_intent == "out_of_scope":
+        return "none"
+    if primary_intent in {"identity_query", "mode_query", "general_chat"}:
+        return "none"
+    if primary_intent == "safety_instruction":
+        return "deep"
+    if primary_intent == "contact_reporting" and topics:
+        return "normal"
+    return str(INTENT_RULES.get(primary_intent, {}).get("depth", "shallow"))
 
 
-def build_selected_file_details(
-    selected_files: list[str],
-    topics: list[str],
-    intent_scores: dict[str, int],
-    confidence: str,
-) -> list[dict[str, Any]]:
-    """Convert the selected file list into structured metadata for budgeting.
+def _needs_knowledge(primary_intent: str, topics: list[str]) -> bool:
+    if primary_intent in {"identity_query", "mode_query", "general_chat", "out_of_scope"}:
+        return False
+    return bool(INTENT_RULES.get(primary_intent, {}).get("needs_knowledge", False) or topics)
 
-    This is the handoff point between intent routing and token budgeting.
-    token_budget.py relies on file, reason, intent, and intent_score to decide
-    how much context each selected knowledge file receives.
-    """
-    ranked = _sorted_intents(intent_scores)
-    if not ranked:
+
+def _add_unique(items: list[str], item: str) -> None:
+    if item and item not in items:
+        items.append(item)
+
+
+def _select_files_from_route(route: dict[str, Any]) -> list[str]:
+    primary_intent = route["primary_intent"]
+    topics = route["topics"]
+    severity = route.get("severity", "none")
+
+    if not route["needs_knowledge"]:
         return []
 
-    top_intent, top_score = ranked[0]
-    second_intent, second_score = ranked[1] if len(ranked) > 1 else (None, 0)
-    primary_file = INTENTS[top_intent]["primary_file"]
-    secondary_file = INTENTS[second_intent]["primary_file"] if second_intent else None
+    selected: list[str] = []
+
+    for file_name in INTENT_PRIMARY_FILES.get(primary_intent, []):
+        _add_unique(selected, file_name)
+
+    if primary_intent == "explanation":
+        for topic in topics:
+            if topic in {"safety", "disease", "creature", "agency", "location", "general"}:
+                _add_unique(selected, TOPIC_TO_FILE[topic])
+
+    if primary_intent == "safety_instruction":
+        if "disease" in topics:
+            _add_unique(selected, "eas_diseases.txt")
+            _add_unique(selected, "eas_contacts.txt")
+        elif "creature" in topics:
+            _add_unique(selected, "eas_creatures.txt")
+            _add_unique(selected, "eas_contacts.txt")
+        elif severity == "urgent":
+            _add_unique(selected, "eas_contacts.txt")
+        else:
+            _add_unique(selected, "eas_general.txt")
+
+    if primary_intent == "contact_reporting":
+        if "disease" in topics:
+            _add_unique(selected, "eas_diseases.txt")
+        if "creature" in topics:
+            _add_unique(selected, "eas_creatures.txt")
+
+    if primary_intent == "current_status":
+        for topic in topics:
+            if topic in {"disease", "creature", "location", "agency"}:
+                _add_unique(selected, TOPIC_TO_FILE[topic])
+
+    if primary_intent == "location_query":
+        _add_unique(selected, "eas_locations.txt")
+
+    return selected[:MAX_SELECTED_FILES]
+
+
+def _file_reason(file_name: str, primary_intent: str) -> str:
+    if file_name in INTENT_PRIMARY_FILES.get(primary_intent, []):
+        return "primary_intent"
+    return "topic_support"
+
+
+def _file_intent(file_name: str, primary_intent: str) -> str:
+    if file_name in INTENT_PRIMARY_FILES.get(primary_intent, []):
+        return primary_intent
+
+    for topic, topic_file in TOPIC_TO_FILE.items():
+        if file_name == topic_file:
+            return topic
+
+    return primary_intent
+
+
+def build_selected_file_details(route: dict[str, Any]) -> list[dict[str, Any]]:
+    """Convert selected files into token_budget.py metadata."""
+    primary_intent = route["primary_intent"]
+    intent_scores = route["intent_scores"]
     details: list[dict[str, Any]] = []
-    seen_files: set[str] = set()
 
-    _add_file_detail(details, seen_files, primary_file, "primary_intent", top_intent, intent_scores)
-
-    if (
-        second_intent
-        and secondary_file
-        and secondary_file in selected_files
-        and secondary_file != primary_file
-        and confidence in {"medium", "low"}
-        and second_score > 0
-    ):
-        _add_file_detail(details, seen_files, secondary_file, "secondary_intent", second_intent, intent_scores)
-
-    for file_name in selected_files:
-        if file_name in seen_files:
-            continue
-
-        if file_name == "eas_general.txt":
-            if top_intent == "general_eas_info":
-                _add_file_detail(details, seen_files, file_name, "primary_intent", top_intent, intent_scores)
-                continue
-
-            if file_name in INTENTS[top_intent].get("secondary_files", []):
-                _add_file_detail(details, seen_files, file_name, "topic_support", FILE_TO_INTENT.get(file_name, top_intent), intent_scores)
-                continue
-
-            if confidence == "low":
-                _add_file_detail(details, seen_files, file_name, "fallback", FILE_TO_INTENT.get(file_name, top_intent), intent_scores)
-                continue
-
-        if file_name == primary_file or file_name == secondary_file:
-            continue
-
-        mapped_intent = FILE_TO_INTENT.get(file_name, top_intent)
-        reason = "topic_support" if mapped_intent != top_intent else "secondary_intent"
-        _add_file_detail(details, seen_files, file_name, reason, mapped_intent, intent_scores)
-
-    for topic in topics:
-        file_name = TOPIC_TO_FILE.get(topic)
-        if not file_name or file_name in seen_files or file_name == primary_file:
-            continue
-
-        mapped_intent = FILE_TO_INTENT.get(file_name, top_intent)
-        _add_file_detail(details, seen_files, file_name, "topic_support", mapped_intent, intent_scores)
+    for file_name in route["selected_files"]:
+        mapped_intent = _file_intent(file_name, primary_intent)
+        details.append(
+            {
+                "file": file_name,
+                "reason": _file_reason(file_name, primary_intent),
+                "intent": mapped_intent,
+                "intent_score": intent_scores.get(primary_intent, 0),
+            }
+        )
 
     return details
 
 
-def route_intent(user_text: str) -> dict[str, Any]:
-    """Main public entry point for intent, topic, and file routing.
+def analyze_query(user_text: str) -> dict[str, Any]:
+    """Build a complete route object for one user prompt."""
+    normalized_text = normalize_text(user_text)
+    intent_scores = score_intents(normalized_text)
+    topic_scores = score_topics(normalized_text)
+    severity_scores = score_severity(normalized_text)
+    severity = _severity_level(severity_scores)
 
-    The controller calls this once per user input before any knowledge files are
-    loaded.
-    """
-    normalized_text = normalize_user_text(user_text)
-    intent_scores, scoring_reasons = score_intents(normalized_text)
-    ranked = _sorted_intents(intent_scores)
-    top_intent = ranked[0][0] if ranked else "general_eas_info"
-    confidence = classify_confidence(intent_scores)
+    if severity == "urgent":
+        intent_scores["safety_instruction"] += 24
+        topic_scores["safety"] += 12
+    elif severity == "elevated":
+        intent_scores["safety_instruction"] += 14
+        topic_scores["safety"] += 8
 
-    topics = detect_topics(normalized_text)
-    topics = _filter_topics_for_intent(topics, top_intent)
-    all_intent_scores_zero = all(score == 0 for score in intent_scores.values())
-    unrecognized = all_intent_scores_zero and not topics
+    primary_intent = _choose_primary_intent(intent_scores)
+    secondary_intents = _choose_secondary_intents(intent_scores, primary_intent)
+    topics = _choose_topics(topic_scores, primary_intent)
+    confidence = _confidence(intent_scores, topic_scores)
+    depth = _depth_for_route(primary_intent, topics)
+    needs_knowledge = _needs_knowledge(primary_intent, topics)
 
-    selected_files = select_files(intent_scores, topics, normalized_text)
-    selected_file_details = build_selected_file_details(selected_files, topics, intent_scores, confidence)
-
-    debug_reasons = list(scoring_reasons)
-    for topic in topics:
-        debug_reasons.append(f"topic detected: {topic}")
-
-    if unrecognized:
-        debug_reasons.append("input not recognized: all intent scores were zero and no topics were detected")
-
-    return {
+    route: dict[str, Any] = {
         "normalized_text": normalized_text,
-        "intent": top_intent,
+        "primary_intent": primary_intent,
+        "secondary_intents": secondary_intents,
         "intent_scores": intent_scores,
-        "confidence": confidence,
         "topics": topics,
-        "all_intent_scores_zero": all_intent_scores_zero,
-        "unrecognized": unrecognized,
-        "selected_files": selected_files,
-        "selected_file_details": selected_file_details,
-        "debug_reasons": debug_reasons,
+        "topic_scores": topic_scores,
+        "severity": severity,
+        "severity_scores": severity_scores,
+        "confidence": confidence,
+        "needs_knowledge": needs_knowledge,
+        "depth": depth,
     }
+    route["selected_files"] = _select_files_from_route(route)
+    route["selected_file_details"] = build_selected_file_details(route)
+    route["unrecognized"] = primary_intent == "out_of_scope" and not topics
+
+    # Compatibility keys used by the current controller/debug code.
+    route["intent"] = primary_intent
+    route["route_intent"] = primary_intent
+    route["route_topics"] = topics
+    route["route_confidence"] = confidence
+    route["route_depth"] = depth
+    route["route_severity"] = severity
+    route["debug_reasons"] = _build_debug_reasons(route)
+    return route
+
+
+def get_relevant_knowledge_files(user_text: str) -> list[str]:
+    """Compatibility helper returning only the selected file names."""
+    return analyze_query(user_text)["selected_files"]
+
+
+def route_intent(user_text: str) -> dict[str, Any]:
+    """Main controller entry point."""
+    return analyze_query(user_text)
+
+
+def _build_debug_reasons(route: dict[str, Any]) -> list[str]:
+    reasons = [
+        f"primary intent selected: {route['primary_intent']}",
+        f"depth selected: {route['depth']}",
+        "fuzzy scorer: rapidfuzz",
+    ]
+
+    if route["secondary_intents"]:
+        reasons.append(f"secondary intents: {', '.join(route['secondary_intents'])}")
+
+    if route["severity"] != "none":
+        reasons.append(f"severity detected: {route['severity']}")
+
+    if route["topics"]:
+        reasons.append(f"topics detected: {', '.join(route['topics'])}")
+
+    if route["unrecognized"]:
+        reasons.append("input not recognized: all intent and topic scores were zero")
+
+    return reasons
+
+
+def _format_scores(scores: dict[str, int]) -> str:
+    return ", ".join(f"{name}={score}" for name, score in _rank_scores(scores))
 
 
 def print_router_debug(route: dict[str, Any]) -> None:
-    """Print routing decisions and the reason trail when debug mode is on."""
+    """Print routing decisions and score details when debug mode is on."""
     if not DEBUG_ROUTER:
         return
 
-    normalized_text = route.get("normalized_text", "")
-    intent = route.get("intent", "unknown")
-    confidence = route.get("confidence", "low")
-    topics = route.get("topics", [])
-    unrecognized = route.get("unrecognized", False)
-    selected_files = route.get("selected_files", [])
-    scores = route.get("intent_scores", {})
+    print(f"[Router] User text: {route.get('normalized_text', '')}")
+    print(f"[Router] Intent: {route.get('primary_intent', 'unknown')}")
+    print(f"[Router] Secondary intents: {', '.join(route.get('secondary_intents', [])) or 'none'}")
+    print(f"[Router] Confidence: {route.get('confidence', 0)}")
+    print(f"[Router] Depth: {route.get('depth', 'none')}")
+    print(f"[Router] Severity: {route.get('severity', 'none')}")
+    print(f"[Router] Needs knowledge: {route.get('needs_knowledge', False)}")
+    print(f"[Router] Unrecognized: {route.get('unrecognized', False)}")
+    print("[Router] Fuzzy scorer: rapidfuzz")
+    print(f"[Router] Intent scores: {_format_scores(route.get('intent_scores', {}))}")
+    print(f"[Router] Topic scores: {_format_scores(route.get('topic_scores', {}))}")
+    print(f"[Router] Severity scores: {_format_scores(route.get('severity_scores', {}))}")
+    print(f"[Router] Topics: {', '.join(route.get('topics', [])) or 'none'}")
+    print(f"[Router] Files: {', '.join(route.get('selected_files', [])) or 'none'}")
+
     reasons = route.get("debug_reasons", [])
-
-    print(f"[Router] User text: {normalized_text}")
-    print(f"[Router] Intent: {intent}")
-    print(f"[Router] Confidence: {confidence}")
-    print(f"[Router] Unrecognized: {unrecognized}")
-    print(
-        "[Router] Scores: "
-        + ", ".join(f"{name}={score}" for name, score in sorted(scores.items(), key=lambda item: (-item[1], item[0])))
-    )
-    print(f"[Router] Topics: {', '.join(topics) if topics else 'none'}")
-    print(f"[Router] Files: {', '.join(selected_files) if selected_files else 'none'}")
-
     if reasons:
         print("[Router] Reasons:")
         for reason in reasons:

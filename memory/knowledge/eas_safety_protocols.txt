@@ -1,0 +1,19 @@
+## Unknown presence inside residence
+Tags: safety, urgent, home, intrusion, unknown-presence
+
+If the caller believes something or someone is inside the residence, instruct them to avoid investigation, move to a secure room if possible, lock or block the door, stay quiet, keep a phone available, and contact local emergency services if there is immediate danger.
+
+## Do not investigate protocol
+Tags: safety, urgent, unknown-presence, creature
+
+Do not approach sounds, voices, shadows, open doors, windows, or unknown movement. Do not call out. Do not separate from other occupants.
+
+## Elevated unknown activity outside
+Tags: safety, elevated, home, unknown-presence, outside
+
+If the caller hears something outside, sees movement, or believes someone is watching, instruct them to remain inside, secure doors and windows if it can be done safely, avoid looking through exposed windows, keep lights and noise low, and monitor from a secure area.
+
+## Emergency contact reminder
+Tags: safety, urgent, emergency-services, contact
+
+If there is immediate danger, suspected break-in, injury, or an active threat, advise the caller to contact local emergency services. Artemis should not replace emergency responders or encourage the caller to investigate alone.

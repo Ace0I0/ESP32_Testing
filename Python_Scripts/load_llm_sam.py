@@ -9,7 +9,7 @@ from pathlib import Path
 
 # The controller imports the router and budget helpers once, then calls them for
 # every user turn inside the main prompt-building path.
-from intent_router import route_intent, print_router_debug
+from intent_router import analyze_query, route_intent, print_router_debug
 import token_budget as budget
 
 
@@ -393,6 +393,14 @@ def build_system_prompt(identity: dict, mode: dict, user_text: str) -> tuple[str
         "knowledge_dir": str(KNOWLEDGE_DIR),
         "selected_files": selected_files,
         "selected_file_details": knowledge_debug,
+        "route_intent": route.get("primary_intent"),
+        "route_topics": route.get("topics", []),
+        "intent_scores": route.get("intent_scores", {}),
+        "topic_scores": route.get("topic_scores", {}),
+        "severity": route.get("severity", "none"),
+        "severity_scores": route.get("severity_scores", {}),
+        "route_confidence": route.get("confidence", 0),
+        "route_depth": route.get("depth", "none"),
         "knowledge_chars": len(budgeted_knowledge_context),
         "knowledge_estimated_tokens": budget.estimate_tokens(budgeted_knowledge_context),
         "knowledge_token_budget": budget.MAX_KNOWLEDGE_TOKENS,
@@ -469,6 +477,33 @@ def print_prompt_debug(debug_info: dict) -> None:
         print_router_debug(route)
 
     budget.print_budget_debug(debug_info)
+
+    intent_scores = debug_info.get("intent_scores", {})
+    topic_scores = debug_info.get("topic_scores", {})
+    severity_scores = debug_info.get("severity_scores", {})
+    sorted_intents = sorted(intent_scores.items(), key=lambda item: (-item[1], item[0]))
+    sorted_topics = sorted(topic_scores.items(), key=lambda item: (-item[1], item[0]))
+    sorted_severity = sorted(severity_scores.items(), key=lambda item: (-item[1], item[0]))
+
+    debug_log(f"route intent: {debug_info.get('route_intent', 'unknown')}")
+    debug_log(f"route topics: {', '.join(debug_info.get('route_topics', [])) or 'none'}")
+    debug_log(f"route severity: {debug_info.get('severity', 'none')}")
+    debug_log(
+        "intent scores: "
+        + ", ".join(f"{name}={score}" for name, score in sorted_intents)
+    )
+    debug_log(
+        "topic scores: "
+        + ", ".join(f"{name}={score}" for name, score in sorted_topics)
+    )
+    debug_log(
+        "severity scores: "
+        + ", ".join(f"{name}={score}" for name, score in sorted_severity)
+    )
+    debug_log(
+        "route confidence/depth: "
+        f"{debug_info.get('route_confidence', 0)} / {debug_info.get('route_depth', 'none')}"
+    )
 
     debug_log(f"knowledge folder: {debug_info['knowledge_dir']}")
     debug_log(
@@ -586,8 +621,49 @@ def thinking_spinner(stop_event: threading.Event) -> None:
     sys.stdout.flush()
 
     
+def run_router_tests() -> int:
+    """Run lightweight router checks without calling llama-server or SAM."""
+    tests = [
+        ("hello artemis", "general_chat", {"general"}),
+        ("who are you", "identity_query", {"general"}),
+        ("what mode are you in", "mode_query", {"general"}),
+        ("anything to report recently", "current_status", {"current_activity"}),
+        ("any updates today", "current_status", {"current_activity"}),
+        ("anything disease related to report", "current_status", {"disease", "current_activity"}),
+        ("who should i contact to report this disease", "contact_reporting", {"disease", "contact"}),
+        ("how do i report this", "contact_reporting", {"contact"}),
+        ("what is deep root disease", "explanation", {"disease"}),
+        ("what should i do if someone has symptoms", "safety_instruction", {"disease"}),
+        ("where is station 7", "location_query", {"location"}),
+        ("tell me about mimics", "explanation", {"creature"}),
+    ]
+
+    failures = 0
+
+    for user_text, expected_intent, expected_topics in tests:
+        route = analyze_query(user_text)
+        actual_intent = route["primary_intent"]
+        actual_topics = set(route["topics"])
+        passed = actual_intent == expected_intent and actual_topics == expected_topics
+        status = "PASS" if passed else "FAIL"
+
+        if not passed:
+            failures += 1
+
+        print(
+            f"[router-test] {status} | {user_text} | "
+            f"intent={actual_intent} expected={expected_intent} | "
+            f"topics={sorted(actual_topics)} expected={sorted(expected_topics)}"
+        )
+
+    print(f"[router-test] {len(tests) - failures}/{len(tests)} passed")
+    return 0 if failures == 0 else 1
+
 
 def main() -> None:
+    if "--router-test" in sys.argv:
+        raise SystemExit(run_router_tests())
+
     if not SAM_BINARY.exists():
         print(f"{RED}SAM binary not found at: {SAM_BINARY}{RESET}")
         return

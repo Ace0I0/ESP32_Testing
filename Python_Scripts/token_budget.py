@@ -14,8 +14,9 @@ MAX_RESPONSE_TOKENS = 512
 FULL_REPORT_RESPONSE_TOKENS = 768
 
 SAFETY_BUFFER_TOKENS = 700
-MAX_SELECTED_FILES = 3
+MAX_SELECTED_FILES = 4
 
+# SET TO FALSE TO DISABLE DEBUG MODE
 DEBUG_BUDGET = True
 
 # Token budget manager for the prompt-building pipeline.
@@ -45,6 +46,11 @@ REASON_RESPONSE_MULTIPLIER = {
 # Per-file budgets are tuned for Raspberry Pi use, not for filling the full
 # context window. Bigger files still need to be trimmed aggressively.
 FILE_BUDGETS = {
+    "eas_safety_protocols.txt": {
+        "context_tokens": 800,
+        "response_tokens": 384,
+        "priority": 9,
+    },
     "eas_contacts.txt": {
         "context_tokens": 300,
         "response_tokens": 160,
